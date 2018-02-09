@@ -1,1 +1,2 @@
-# hardware-modules
+# Hardware
+## Wi-Mix Hardware Project
