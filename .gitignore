@@ -1,4 +1,7 @@
 .qsys_edit
+
 unsaved
-*bak
+output_files
+
+*.bak
 *~
