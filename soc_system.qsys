@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags=""
-   categories="" />
+   categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element clk_0
@@ -15,6 +15,132 @@
       {
          value = "0";
          type = "int";
+      }
+   }
+   element hex0
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element hex0.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "256";
+         type = "String";
+      }
+   }
+   element hex1
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element hex1.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "272";
+         type = "String";
+      }
+   }
+   element hex2
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element hex2.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "288";
+         type = "String";
+      }
+   }
+   element hex3
+   {
+      datum _sortIndex
+      {
+         value = "8";
+         type = "int";
+      }
+   }
+   element hex3.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "304";
+         type = "String";
+      }
+   }
+   element hex4
+   {
+      datum _sortIndex
+      {
+         value = "9";
+         type = "int";
+      }
+   }
+   element hex4.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "320";
+         type = "String";
+      }
+   }
+   element hex5
+   {
+      datum _sortIndex
+      {
+         value = "10";
+         type = "int";
+      }
+   }
+   element hex5.avalon_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "336";
+         type = "String";
       }
    }
    element hps
@@ -37,8 +163,34 @@
    {
       datum _lockedAddress
       {
+         value = "0";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
+      }
+   }
+   element switches
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
+   element switches.s1
+   {
+      datum _lockedAddress
+      {
          value = "1";
          type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4352";
+         type = "String";
       }
    }
    element sysid_qsys_0
@@ -58,7 +210,7 @@
       }
       datum baseAddress
       {
-         value = "256";
+         value = "4096";
          type = "String";
       }
    }
@@ -76,7 +228,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="" />
+ <parameter name="projectName" value="hardware.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -84,6 +236,13 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface name="hex0" internal="hex0.conduit" type="conduit" dir="end" />
+ <interface name="hex1" internal="hex1.conduit" type="conduit" dir="end" />
+ <interface name="hex2" internal="hex2.conduit" type="conduit" dir="end" />
+ <interface name="hex3" internal="hex3.conduit" type="conduit" dir="end" />
+ <interface name="hex4" internal="hex4.conduit" type="conduit" dir="end" />
+ <interface name="hex5" internal="hex5.conduit" type="conduit" dir="end" />
+ <interface name="hps_io" internal="hps.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="hps.memory" type="conduit" dir="end" />
  <interface
    name="red_leds_external_connection"
@@ -91,12 +250,23 @@
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <interface
+   name="switches_external_connection"
+   internal="switches.external_connection"
+   type="conduit"
+   dir="end" />
  <module name="clk_0" kind="clock_source" version="17.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
+ <module name="hex0" kind="seven_seg" version="1.0" enabled="1" />
+ <module name="hex1" kind="seven_seg" version="1.0" enabled="1" />
+ <module name="hex2" kind="seven_seg" version="1.0" enabled="1" />
+ <module name="hex3" kind="seven_seg" version="1.0" enabled="1" />
+ <module name="hex4" kind="seven_seg" version="1.0" enabled="1" />
+ <module name="hex5" kind="seven_seg" version="1.0" enabled="1" />
  <module name="hps" kind="altera_hps" version="17.0" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
   <parameter name="ABS_RAM_MEM_INIT_FILENAME" value="meminit" />
@@ -641,6 +811,20 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="10" />
  </module>
+ <module name="switches" kind="altera_avalon_pio" version="17.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="10" />
+ </module>
  <module
    name="sysid_qsys_0"
    kind="altera_avalon_sysid_qsys"
@@ -652,9 +836,63 @@
    kind="avalon"
    version="17.0"
    start="hps.h2f_lw_axi_master"
-   end="sysid_qsys_0.control_slave">
+   end="hex0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="hex1.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0110" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="hex2.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0120" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="hex3.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0130" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="hex4.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0140" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="hex5.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0150" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="sysid_qsys_0.control_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -666,8 +904,24 @@
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="switches.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="17.0" start="clk_0.clk" end="red_leds.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="sysid_qsys_0.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="switches.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex0.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex1.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex2.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex3.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex4.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="hex5.clock" />
  <connection
    kind="clock"
    version="17.0"
@@ -686,6 +940,17 @@
  <connection
    kind="reset"
    version="17.0"
+   start="clk_0.clk_reset"
+   end="switches.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex0.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex1.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex2.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex3.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex4.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="hex5.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
    start="hps.h2f_reset"
    end="red_leds.reset" />
  <connection
@@ -693,6 +958,17 @@
    version="17.0"
    start="hps.h2f_reset"
    end="sysid_qsys_0.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="hps.h2f_reset"
+   end="switches.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex0.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex1.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex2.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex3.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex4.reset" />
+ <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex5.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

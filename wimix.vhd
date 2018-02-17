@@ -21,8 +21,7 @@
 
 	entity wimix is
 	
-	port
-	(
+	port (
 	
 			--Clock pin
 			
@@ -133,7 +132,14 @@
 			
 		-- FPGA side pins
 			
-			LEDR 						: out std_logic_vector(9 downto 0) 
+			LEDR 						: out std_logic_vector(9 downto 0);
+			SW							: in  std_logic_vector(9 downto 0);
+			HEX0_N					: out std_logic_vector(6 downto 0);			
+			HEX1_N					: out std_logic_vector(6 downto 0);
+			HEX2_N					: out std_logic_vector(6 downto 0);
+			HEX3_N					: out std_logic_vector(6 downto 0);
+			HEX4_N					: out std_logic_vector(6 downto 0);
+			HEX5_N					: out std_logic_vector(6 downto 0)
 	);
 end wimix;
 
@@ -212,7 +218,14 @@ architecture rtl of wimix is
             hps_io_hps_io_gpio_inst_GPIO53      : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO53
             hps_io_hps_io_gpio_inst_GPIO54      : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO54
             hps_io_hps_io_gpio_inst_GPIO61      : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO61
-            red_leds_external_connection_export : out   std_logic_vector(9 downto 0)                      -- export
+            red_leds_external_connection_export : out   std_logic_vector(9 downto 0);                     -- export
+				switches_external_connection_export : in    std_logic_vector(9 downto 0);
+				hex0_export : out   std_logic_vector(6 downto 0);                         
+				hex1_export : out   std_logic_vector(6 downto 0);                        
+				hex2_export : out   std_logic_vector(6 downto 0);                        
+				hex3_export : out   std_logic_vector(6 downto 0);                        
+				hex4_export : out   std_logic_vector(6 downto 0);                        
+				hex5_export : out   std_logic_vector(6 downto 0)                        
         );
     end component soc_system;
 
@@ -298,7 +311,14 @@ begin
 						hps_io_hps_io_gpio_inst_GPIO53 		=> HPS_LED,
 						hps_io_hps_io_gpio_inst_GPIO54 		=> HPS_KEY_N,
 						hps_io_hps_io_gpio_inst_GPIO61 		=> HPS_GSENSOR_INT,
-						red_leds_external_connection_export => LEDR 
+						red_leds_external_connection_export => LEDR,
+						switches_external_connection_export => SW,
+						hex0_export                         => HEX0_N,
+						hex1_export                         => HEX1_N,
+						hex2_export                         => HEX2_N,
+						hex3_export                         => HEX3_N,
+						hex4_export                         => HEX4_N,
+						hex5_export                         => HEX5_N
         );
 
 
