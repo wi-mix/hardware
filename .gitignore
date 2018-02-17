@@ -51,3 +51,4 @@ PLLJ_PLLSPE_INFO.txt # The generated PLL specification file
 
 # Custom Ignores
 .qsys_edit
+output_files
