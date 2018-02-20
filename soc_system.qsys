@@ -9,6 +9,48 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
+   element adc_controller
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element adc_controller.adc_control
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8704";
+         type = "String";
+      }
+   }
+   element adc_controller.adc_data
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "512";
+         type = "String";
+      }
+   }
+   element adc_controller.data_ready
+   {
+      datum _tags
+      {
+         value = "";
+         type = "String";
+      }
+   }
    element clk_0
    {
       datum _sortIndex
@@ -172,6 +214,14 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element switches
    {
       datum _sortIndex
@@ -235,6 +285,41 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
+ <interface
+   name="adc_controller_0_adc_control"
+   internal="adc_controller.adc_control1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_0_adc_data"
+   internal="adc_controller.adc_data1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_0_conduit_adc"
+   internal="adc_controller.conduit_adc1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_0_data_ready"
+   internal="adc_controller.data_ready1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_0_invalid_configuration"
+   internal="adc_controller.invalid_configuration1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_0_reset"
+   internal="adc_controller.reset1"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="adc_controller_conduit_adc"
+   internal="adc_controller.conduit_adc"
+   type="conduit"
+   dir="end" />
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
  <interface name="hex0" internal="hex0.conduit" type="conduit" dir="end" />
  <interface name="hex1" internal="hex1.conduit" type="conduit" dir="end" />
@@ -255,6 +340,7 @@
    internal="switches.external_connection"
    type="conduit"
    dir="end" />
+ <module name="adc_controller" kind="adc_controller" version="1.0" enabled="1" />
  <module name="clk_0" kind="clock_source" version="17.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -379,7 +465,7 @@
   <parameter name="F2SCLK_WARMRST_Enable" value="false" />
   <parameter name="F2SDRAM_Type" value="" />
   <parameter name="F2SDRAM_Width" value="" />
-  <parameter name="F2SINTERRUPT_Enable" value="false" />
+  <parameter name="F2SINTERRUPT_Enable" value="true" />
   <parameter name="F2S_Width" value="0" />
   <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
@@ -836,6 +922,24 @@
    kind="avalon"
    version="17.0"
    start="hps.h2f_lw_axi_master"
+   end="adc_controller.adc_control">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2200" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
+   end="adc_controller.adc_data">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0200" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
    end="hex0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0100" />
@@ -926,7 +1030,26 @@
    kind="clock"
    version="17.0"
    start="clk_0.clk"
+   end="adc_controller.clock" />
+ <connection
+   kind="clock"
+   version="17.0"
+   start="clk_0.clk"
    end="hps.h2f_lw_axi_clock" />
+ <connection
+   kind="interrupt"
+   version="17.0"
+   start="hps.f2h_irq0"
+   end="adc_controller.data_ready">
+  <parameter name="irqNumber" value="0" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="17.0"
+   start="hps.f2h_irq0"
+   end="adc_controller.invalid_configuration">
+  <parameter name="irqNumber" value="1" />
+ </connection>
  <connection
    kind="reset"
    version="17.0"
@@ -951,6 +1074,11 @@
  <connection
    kind="reset"
    version="17.0"
+   start="clk_0.clk_reset"
+   end="adc_controller.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
    start="hps.h2f_reset"
    end="red_leds.reset" />
  <connection
@@ -969,6 +1097,11 @@
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex3.reset" />
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex4.reset" />
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex5.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="hps.h2f_reset"
+   end="adc_controller.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
