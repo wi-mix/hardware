@@ -7,23 +7,23 @@ use IEEE.numeric_std.all;
 entity timer is
 	port (
 		clk		: in	std_logic                      := '0';             --                 clock.clk
-		reset	: in	std_logic                      := '0';             --                 reset.reset
+		enable	: in	std_logic                      := '0';             --                 reset.reset
 		target	: in	unsigned(31 downto 0);
 		done	: out	std_logic
 	);
 end entity timer;
 
 architecture rtl of timer is
-	signal trg 		: unsigned(31 downto 0) := "00000000";
-	signal count 	: unsigned(31 downto 0) := "00000000";
+	signal trg 		: unsigned(31 downto 0) := x"00000000";
+	signal count 	: unsigned(31 downto 0) := x"00000000";
 begin
-	main_proc : process (clk)
+	main_proc : process (enable, clk)
 	begin
-		if(reset = '1') then
-			count <= "0";
+		if(enable = '0') then
+			count <= x"00000000";
 			trg <= target;
 			done <= '0';
-		elsif(rising_edge(clk)) then
+		elsif(enable = '1' and rising_edge(clk)) then
 			if (count < trg) then
 				done <= '0';
 				count <= count + 1;
