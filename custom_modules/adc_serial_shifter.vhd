@@ -20,21 +20,21 @@ entity adc_serial_shifter is
 end entity adc_serial_shifter;
 
 architecture rtl of adc_serial_shifter is
-	signal state : unsigned(4 downto 0) := x"0";
-	signal next_state : unsigned(4 downto 0) := x"0";
+	signal state : unsigned(3 downto 0) := x"0";
+	signal next_state : unsigned(3 downto 0) := x"0";
 	
 	-- shift registers
-	signal shift_in : unsigned(11 downto 0) := x"0";
-	signal shift_out : unsigned(5 downto 0) := x"0";
+	signal shift_in : std_logic_vector(11 downto 0) := x"000";
+	signal shift_out : std_logic_vector(5 downto 0) := "000000";
 
 	-- Important States
-	constant W8T : unsigned(4 downto 0) := x"0";
-	constant MSS : unsigned(4 downto 0) := x"1";
-	constant HSS : unsigned(4 downto 0) := x"7";
-	constant LSS : unsigned(4 downto 0) := x"D";
+	constant W8T : unsigned(3 downto 0) := x"0";
+	constant MSS : unsigned(3 downto 0) := x"1";
+	constant HSS : unsigned(3 downto 0) := x"7";
+	constant LSS : unsigned(3 downto 0) := x"D";
 
 begin
-	main_proc : process (clk)
+	rising_proc : process (clk)
 	begin
 		if(rising_edge(clk)) then
 			if (state = W8T) then
@@ -53,16 +53,21 @@ begin
 					next_state <= state + 1;
 				end if;	
 			end if;
-		elsif(falling_edge(clk)) then
+		end if;
+	end process rising_proc;
+	
+	falling_proc : process (clk)
+	begin
+		if(falling_edge(clk)) then
 			-- Shift register
 			if(state /= W8T) then
-				shift_in <= shift_in sll 1;
-				shift_out <= shift_out sll 1;
+				shift_in(11 downto 1) <= shift_in(10 downto 0);
+				shift_out <= shift_out(4 DOWNTO 0) & '0';
 			end if;
 			
 			state <= next_state;			
 		end if;
-	end process main_proc;
+	end process falling_proc;
 	
 	-- Outputs
 	serial_clk 	<= '0' when state = W8T else clk;

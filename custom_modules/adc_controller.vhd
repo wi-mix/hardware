@@ -64,6 +64,7 @@ architecture rtl of adc_controller is
 	-- Serial Shifter Clock
 	signal ass_clk 		: std_logic;
 	signal ass_clk_div 	: unsigned(31 downto 0) := x"00000007";
+	signal ass_start	: std_logic;
 	signal ass_ready	: std_logic;
 	signal ass_half		: std_logic;
 	signal ass_data		: std_logic_vector(11 downto 0);
@@ -151,7 +152,7 @@ begin
 	-- Assuming 500 MHz input clock ~ 2ns
 	-- 7 rising edges per half period
 	-- 1/(7 * 2 * 2ns) = 35.71 MHz
-	FD0: freq_divider port map (clk => clk, target => serial_clk_div, output => serial_clk);
+	FD0: freq_divider port map (clk => clk, target => ass_clk_div, output => ass_clk);
 	
 	ASS: adc_serial_shifter port map (
 		clk 	=> ass_clk,
