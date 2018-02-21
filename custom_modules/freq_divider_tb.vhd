@@ -17,13 +17,13 @@ architecture test_bench of freq_divider_tb is
 	signal target 	: unsigned(31 downto 0);
 	signal output 	: std_logic;
 begin
-	clk <= not clk after 2ns;
+	clk <= not clk after 1ns;
 	
 	stimulus : process
 	begin
 		target <= to_unsigned(2, 32);
-		wait for 10 ns;
-		target <= to_unsigned(4, 32);
+		wait for 50 ns;
+		target <= to_unsigned(7, 32);
 		wait;
 	end process stimulus;
 

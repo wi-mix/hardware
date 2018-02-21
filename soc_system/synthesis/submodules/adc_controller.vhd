@@ -60,18 +60,39 @@ architecture rtl of adc_controller is
 
 	alias adc_ctrl_freq_div	: std_logic_vector is adc_control(7 downto 0);
 	
-	-- Serial Interface Signals
-	-- Serial Clock
-	signal serial_clk 		: std_logic;
-	signal serial_clk_div 	: unsigned(31 downto 0) := x"00000007"; 
-	
+	-- Serial Shifter Signals
+	-- Serial Shifter Clock
+	signal ass_clk 		: std_logic;
+	signal ass_clk_div 	: unsigned(31 downto 0) := x"00000007";
+	signal ass_start	: std_logic;
+	signal ass_ready	: std_logic;
+	signal ass_half		: std_logic;
+	signal ass_data		: std_logic_vector(11 downto 0);
+	signal ass_cmd		: std_logic_vector(5 downto 0);
+
 	-- Components
 	component freq_divider is
 	port (
 		clk		: in	std_logic;
 		target	: in	unsigned(31 downto 0);
-		output	: out	std_logic);
+		output	: out	std_logic
+	);
 	end component freq_divider;
+	
+	component adc_serial_shifter is
+	port (
+		clk		: in	std_logic;
+		start	: in	std_logic;
+		cmd		: in	std_logic_vector(5 downto 0);
+		half	: out 	std_logic;
+		ready	: out	std_logic;
+		data	: out 	std_logic_vector(11 downto 0);
+		-- Serial Port
+		serial_in	: in	std_logic;
+		serial_clk	: out	std_logic;
+		serial_out	: out	std_logic
+	);
+	end component adc_serial_shifter;
 
 begin
 
@@ -131,13 +152,20 @@ begin
 	-- Assuming 500 MHz input clock ~ 2ns
 	-- 7 rising edges per half period
 	-- 1/(7 * 2 * 2ns) = 35.71 MHz
-	FD0: freq_divider port map (clk => clk, target => serial_clk_div, output => serial_clk);
-
-
-	conduit_adc_clk <= '0';
+	FD0: freq_divider port map (clk => clk, target => ass_clk_div, output => ass_clk);
+	
+	ASS: adc_serial_shifter port map (
+		clk 	=> ass_clk,
+		start 	=> ass_start,
+		cmd 	=> ass_cmd,
+		half 	=> ass_half,
+		ready 	=> ass_ready,
+		data 	=> ass_data,
+		-- Serial Port
+		serial_in 	=> conduit_adc_sdi,
+		serial_clk 	=> conduit_adc_clk,
+		serial_out 	=> conduit_adc_sdo);
 
 	conduit_adc_convst <= '0';
-
-	conduit_adc_sdo <= '0';
 
 end architecture rtl; -- of adc_controller
