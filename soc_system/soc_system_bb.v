@@ -1,18 +1,9 @@
 
 module soc_system (
-	adc_controller_0_adc_control_read,
-	adc_controller_0_adc_control_readdata,
-	adc_controller_0_adc_control_write,
-	adc_controller_0_adc_control_writedata,
-	adc_controller_0_adc_data_read,
-	adc_controller_0_adc_data_readdata,
-	adc_controller_0_conduit_adc_export_clk,
-	adc_controller_0_conduit_adc_export_convst,
-	adc_controller_0_conduit_adc_export_sdo,
-	adc_controller_0_conduit_adc_export_sdi,
-	adc_controller_0_data_ready_irq,
-	adc_controller_0_invalid_configuration_irq,
-	adc_controller_0_reset_reset,
+	adc_export_clk,
+	adc_export_convst,
+	adc_export_sdo,
+	adc_export_sdi,
 	clk_clk,
 	hex0_export,
 	hex1_export,
@@ -87,25 +78,12 @@ module soc_system (
 	memory_oct_rzqin,
 	red_leds_external_connection_export,
 	reset_reset_n,
-	switches_external_connection_export,
-	adc_controller_conduit_adc_export_clk,
-	adc_controller_conduit_adc_export_convst,
-	adc_controller_conduit_adc_export_sdo,
-	adc_controller_conduit_adc_export_sdi);	
+	switches_external_connection_export);	
 
-	output		adc_controller_0_adc_control_read;
-	input	[31:0]	adc_controller_0_adc_control_readdata;
-	output		adc_controller_0_adc_control_write;
-	output	[31:0]	adc_controller_0_adc_control_writedata;
-	output		adc_controller_0_adc_data_read;
-	input	[127:0]	adc_controller_0_adc_data_readdata;
-	input		adc_controller_0_conduit_adc_export_clk;
-	input		adc_controller_0_conduit_adc_export_convst;
-	input		adc_controller_0_conduit_adc_export_sdo;
-	output		adc_controller_0_conduit_adc_export_sdi;
-	input		adc_controller_0_data_ready_irq;
-	input		adc_controller_0_invalid_configuration_irq;
-	output		adc_controller_0_reset_reset;
+	output		adc_export_clk;
+	output		adc_export_convst;
+	output		adc_export_sdo;
+	input		adc_export_sdi;
 	input		clk_clk;
 	output	[6:0]	hex0_export;
 	output	[6:0]	hex1_export;
@@ -181,8 +159,4 @@ module soc_system (
 	output	[9:0]	red_leds_external_connection_export;
 	input		reset_reset_n;
 	input	[9:0]	switches_external_connection_export;
-	output		adc_controller_conduit_adc_export_clk;
-	output		adc_controller_conduit_adc_export_convst;
-	output		adc_controller_conduit_adc_export_sdo;
-	input		adc_controller_conduit_adc_export_sdi;
 endmodule

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="soc_system" kind="soc_system" version="1.0" fabric="QSYS">
  <!-- Format version 17.0 602 (Future versions may contain additional information.) -->
- <!-- 2018.02.20.11:18:42 -->
+ <!-- 2018.02.20.17:24:18 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1519150721</value>
+  <value>1519172658</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -95,11 +95,7 @@
   <visible>true</visible>
   <valid>true</valid>
  </parameter>
- <module
-   name="adc_controller"
-   kind="adc_controller"
-   version="1.0"
-   path="adc_controller">
+ <module name="adc" kind="adc_controller" version="1.0" path="adc">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
   <parameter name="deviceFamily">
@@ -177,7 +173,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="synchronousEdges">
     <type>com.altera.sopcmodel.reset.Reset$Edges</type>
-    <value>DEASSERT</value>
+    <value>NONE</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -983,7 +979,7 @@ particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
    <parameter name="associatedAddressablePoint">
     <type>com.altera.entityinterfaces.IConnectionPoint</type>
-    <value>adc_controller.adc_control</value>
+    <value>adc.adc_control</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -1060,7 +1056,7 @@ particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
    <parameter name="associatedAddressablePoint">
     <type>com.altera.entityinterfaces.IConnectionPoint</type>
-    <value>adc_controller.adc_control</value>
+    <value>adc.adc_control</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -1127,342 +1123,6 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>invalid_configuration_irq</name>
     <direction>Output</direction>
-    <width>1</width>
-    <role>irq</role>
-   </port>
-  </interface>
-  <interface name="reset1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_reset</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>reset_reset</name>
-    <direction>Output</direction>
-    <width>1</width>
-    <role>reset</role>
-   </port>
-  </interface>
-  <interface name="adc_data1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_adc_data</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>adc_data_read</name>
-    <direction>Output</direction>
-    <width>1</width>
-    <role>read</role>
-   </port>
-   <port>
-    <name>adc_data_readdata1</name>
-    <direction>Input</direction>
-    <width>128</width>
-    <role>readdata</role>
-   </port>
-  </interface>
-  <interface name="adc_control1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_adc_control</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>adc_control_read</name>
-    <direction>Output</direction>
-    <width>1</width>
-    <role>read</role>
-   </port>
-   <port>
-    <name>adc_control_readdata1</name>
-    <direction>Input</direction>
-    <width>32</width>
-    <role>readdata</role>
-   </port>
-   <port>
-    <name>adc_control_write</name>
-    <direction>Output</direction>
-    <width>1</width>
-    <role>write</role>
-   </port>
-   <port>
-    <name>adc_control_writedata1</name>
-    <direction>Output</direction>
-    <width>32</width>
-    <role>writedata</role>
-   </port>
-  </interface>
-  <interface name="conduit_adc1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_conduit_adc</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>conduit_adc_export_clk</name>
-    <direction>Input</direction>
-    <width>1</width>
-    <role>export_clk</role>
-   </port>
-   <port>
-    <name>conduit_adc_export_convst</name>
-    <direction>Input</direction>
-    <width>1</width>
-    <role>export_convst</role>
-   </port>
-   <port>
-    <name>conduit_adc_export_sdo</name>
-    <direction>Input</direction>
-    <width>1</width>
-    <role>export_sdo</role>
-   </port>
-   <port>
-    <name>conduit_adc_export_sdi</name>
-    <direction>Output</direction>
-    <width>1</width>
-    <role>export_sdi</role>
-   </port>
-  </interface>
-  <interface name="data_ready1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_data_ready</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>data_ready_irq1</name>
-    <direction>Input</direction>
-    <width>1</width>
-    <role>irq</role>
-   </port>
-  </interface>
-  <interface name="invalid_configuration1" kind="conduit_end" version="17.0">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <assignment>
-    <name>qsys.ui.export_name</name>
-    <value>adc_controller_invalid_configuration</value>
-   </assignment>
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>invalid_configuration_irq1</name>
-    <direction>Input</direction>
     <width>1</width>
     <role>irq</role>
    </port>
@@ -1759,9 +1419,9 @@ parameters are a RESULT of the module parameters. -->
    </clockDomainMember>
    <clockDomainMember>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>clock</slaveName>
-    <name>adc_controller.clock</name>
+    <name>adc.clock</name>
    </clockDomainMember>
    <clockDomainMember>
     <isBridge>false</isBridge>
@@ -20436,17 +20096,17 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_control</slaveName>
-    <name>adc_controller.adc_control</name>
+    <name>adc.adc_control</name>
     <baseAddress>8704</baseAddress>
     <span>4</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_data</slaveName>
-    <name>adc_controller.adc_data</name>
+    <name>adc.adc_data</name>
     <baseAddress>512</baseAddress>
     <span>16</span>
    </memoryBlock>
@@ -20601,16 +20261,16 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <interrupt>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>data_ready</slaveName>
-    <name>adc_controller.data_ready</name>
+    <name>adc.data_ready</name>
     <interruptNumber>0</interruptNumber>
    </interrupt>
    <interrupt>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>invalid_configuration</slaveName>
-    <name>adc_controller.invalid_configuration</name>
+    <name>adc.invalid_configuration</name>
     <interruptNumber>1</interruptNumber>
    </interrupt>
   </interface>
@@ -46520,17 +46180,17 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_control</slaveName>
-    <name>adc_controller.adc_control</name>
+    <name>adc.adc_control</name>
     <baseAddress>8704</baseAddress>
     <span>4</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_data</slaveName>
-    <name>adc_controller.adc_data</name>
+    <name>adc.adc_data</name>
     <baseAddress>512</baseAddress>
     <span>16</span>
    </memoryBlock>
@@ -47715,17 +47375,17 @@ parameters are a RESULT of the module parameters. -->
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_control</slaveName>
-    <name>adc_controller.adc_control</name>
+    <name>adc.adc_control</name>
     <baseAddress>4280295936</baseAddress>
     <span>4</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_data</slaveName>
-    <name>adc_controller.adc_data</name>
+    <name>adc.adc_data</name>
     <baseAddress>4280287744</baseAddress>
     <span>16</span>
    </memoryBlock>
@@ -48614,17 +48274,17 @@ parameters are a RESULT of the module parameters. -->
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_control</slaveName>
-    <name>adc_controller.adc_control</name>
+    <name>adc.adc_control</name>
     <baseAddress>4280295936</baseAddress>
     <span>4</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>adc_data</slaveName>
-    <name>adc_controller.adc_data</name>
+    <name>adc.adc_data</name>
     <baseAddress>4280287744</baseAddress>
     <span>16</span>
    </memoryBlock>
@@ -49671,16 +49331,16 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <interrupt>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>data_ready</slaveName>
-    <name>adc_controller.data_ready</name>
+    <name>adc.data_ready</name>
     <interruptNumber>0</interruptNumber>
    </interrupt>
    <interrupt>
     <isBridge>false</isBridge>
-    <moduleName>adc_controller</moduleName>
+    <moduleName>adc</moduleName>
     <slaveName>invalid_configuration</slaveName>
-    <name>adc_controller.invalid_configuration</name>
+    <name>adc.invalid_configuration</name>
     <interruptNumber>1</interruptNumber>
    </interrupt>
   </interface>
@@ -77828,7 +77488,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1519150721</value>
+   <value>1519172658</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -77848,7 +77508,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1519150721</value>
+   <value>1519172658</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -77864,7 +77524,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1519150721</value>
+   <value>1519172658</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -86306,11 +85966,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>interrupt_sender</endConnectionPoint>
  </connection>
  <connection
-   name="hps_bridges.h2f_lw/adc_controller.adc_control"
+   name="hps_bridges.h2f_lw/adc.adc_control"
    kind="avalon"
    version="17.0"
    start="hps_bridges.h2f_lw"
-   end="adc_controller.adc_control">
+   end="adc.adc_control">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -86353,15 +86013,15 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>hps_bridges</startModule>
   <startConnectionPoint>h2f_lw</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>adc_control</endConnectionPoint>
  </connection>
  <connection
-   name="hps_bridges.h2f_lw/adc_controller.adc_data"
+   name="hps_bridges.h2f_lw/adc.adc_data"
    kind="avalon"
    version="17.0"
    start="hps_bridges.h2f_lw"
-   end="adc_controller.adc_data">
+   end="adc.adc_data">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -86404,7 +86064,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>hps_bridges</startModule>
   <startConnectionPoint>h2f_lw</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>adc_data</endConnectionPoint>
  </connection>
  <connection
@@ -87110,11 +86770,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>clock</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/adc_controller.clock"
+   name="clk_0.clk/adc.clock"
    kind="clock"
    version="17.0"
    start="clk_0.clk"
-   end="adc_controller.clock">
+   end="adc.clock">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -87133,7 +86793,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>clk_0</startModule>
   <startConnectionPoint>clk</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>clock</endConnectionPoint>
  </connection>
  <connection
@@ -87164,11 +86824,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>h2f_lw_axi_clock</endConnectionPoint>
  </connection>
  <connection
-   name="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40/adc_controller.data_ready"
+   name="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40/adc.data_ready"
    kind="interrupt"
    version="17.0"
    start="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40"
-   end="adc_controller.data_ready">
+   end="adc.data_ready">
   <parameter name="irqNumber">
    <type>int</type>
    <value>0</value>
@@ -87195,15 +86855,15 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>hps_arm_gic_0</startModule>
   <startConnectionPoint>f2h_irq_0_irq_rx_offset_40</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>data_ready</endConnectionPoint>
  </connection>
  <connection
-   name="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40/adc_controller.invalid_configuration"
+   name="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40/adc.invalid_configuration"
    kind="interrupt"
    version="17.0"
    start="hps_arm_gic_0.f2h_irq_0_irq_rx_offset_40"
-   end="adc_controller.invalid_configuration">
+   end="adc.invalid_configuration">
   <parameter name="irqNumber">
    <type>int</type>
    <value>1</value>
@@ -87230,7 +86890,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>hps_arm_gic_0</startModule>
   <startConnectionPoint>f2h_irq_0_irq_rx_offset_40</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>invalid_configuration</endConnectionPoint>
  </connection>
  <connection
@@ -87477,11 +87137,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>reset</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk_reset/adc_controller.reset"
+   name="clk_0.clk_reset/adc.reset"
    kind="reset"
    version="17.0"
    start="clk_0.clk_reset"
-   end="adc_controller.reset">
+   end="adc.reset">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -87500,7 +87160,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>clk_0</startModule>
   <startConnectionPoint>clk_reset</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>reset</endConnectionPoint>
  </connection>
  <connection
@@ -87747,11 +87407,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>reset</endConnectionPoint>
  </connection>
  <connection
-   name="hps_bridges.h2f_reset/adc_controller.reset"
+   name="hps_bridges.h2f_reset/adc.reset"
    kind="reset"
    version="17.0"
    start="hps_bridges.h2f_reset"
-   end="adc_controller.reset">
+   end="adc.reset">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -87770,7 +87430,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>hps_bridges</startModule>
   <startConnectionPoint>h2f_reset</startConnectionPoint>
-  <endModule>adc_controller</endModule>
+  <endModule>adc</endModule>
   <endConnectionPoint>reset</endConnectionPoint>
  </connection>
  <plugin>
@@ -87819,38 +87479,6 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Interrupt Sender</displayName>
-  <version>17.0</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>conduit_end</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Conduit</displayName>
-  <version>17.0</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>conduit_end</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Conduit</displayName>
-  <version>17.0</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>conduit_end</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Conduit</displayName>
-  <version>17.0</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>conduit_end</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Conduit</displayName>
   <version>17.0</version>
  </plugin>
  <plugin>

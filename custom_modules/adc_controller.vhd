@@ -1,13 +1,5 @@
 -- adc_controller.vhd
 
--- This file was auto-generated as a prototype implementation of a module
--- created in component editor.  It ties off all outputs to ground and
--- ignores all inputs.  It needs to be edited to make it do something
--- useful.
--- 
--- This file will not be automatically regenerated.  You should check it in
--- to your version control system if you want to keep it.
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -32,22 +24,120 @@ entity adc_controller is
 end entity adc_controller;
 
 architecture rtl of adc_controller is
+	-- Internal Control Register
+	signal adc_control : std_logic_vector(31 downto 0);
+
+
+	-- Data port aliases
+	alias adc_data0 : std_logic_vector is adc_data_readdata(15 downto 0);
+	alias adc_data1 : std_logic_vector is adc_data_readdata(31 downto 16);
+	alias adc_data2 : std_logic_vector is adc_data_readdata(47 downto 32);
+	alias adc_data3 : std_logic_vector is adc_data_readdata(63 downto 48);
+	alias adc_data4 : std_logic_vector is adc_data_readdata(79 downto 64);
+	alias adc_data5 : std_logic_vector is adc_data_readdata(95 downto 80);
+	alias adc_data6 : std_logic_vector is adc_data_readdata(111 downto 96);
+	alias adc_data7 : std_logic_vector is adc_data_readdata(127 downto 112);
+
+	-- Control Port Aliases
+	
+	-- IRQ Controls
+	alias adc_ctrl_data_ready   : std_logic is adc_control(31);
+	alias adc_ctrl_invalid      : std_logic is adc_control(30);
+	
+	-- Power Mode
+	alias adc_ctrl_mode         : std_logic_vector is adc_control(29 downto 28);
+	
+	-- Averaging Controls
+	alias adc_ctrl_average      : std_logic_vector is adc_control(27 downto 26);
+	
+	-- Duplex Controls
+	alias adc_ctrl_sign         : std_logic is adc_control(25);
+	alias adc_ctrl_polarity		: std_logic is adc_control(24);
+	alias adc_ctrl_duplexity	: std_logic_vector is adc_control(23 downto 20);
+
+	-- Enabled Channels
+	alias adc_ctrl_chan_enable	: std_logic_vector is adc_control(15 downto 8);
+
+	alias adc_ctrl_freq_div	: std_logic_vector is adc_control(7 downto 0);
+	
+	-- Serial Interface Signals
+	-- Serial Clock
+	signal serial_clk 		: std_logic;
+	signal serial_clk_div 	: unsigned(31 downto 0) := x"00000007"; 
+	
+	-- Components
+	component freq_divider is
+	port (
+		clk		: in	std_logic;
+		target	: in	unsigned(31 downto 0);
+		output	: out	std_logic);
+	end component freq_divider;
+
 begin
 
-	-- TODO: Auto-generated HDL template
+	write_control_register	: process(clk, reset_n, adc_control_write_n)
+		variable invalid : std_logic := '0';
+	begin
+		if (reset_n = '0') then
+			adc_control <= x"00000000";
+		elsif (rising_edge(clk)) then
+			if (adc_control_write_n = '1') then
+				-- Store Settings
+				adc_control(31) <= adc_control_writedata(31);
+				adc_control(29 downto 0) <= adc_control_writedata(29 downto 0);
+				
+				-- Validate Input
+				-- Duplex Channel 3 Validation
+				-- Channel 7 must be disabled when in duplex
+				if (adc_control_writedata(23) = '1' and adc_control_writedata(15) = '1') then
+					invalid := '1';
+				-- Duplex Channel 2 Validation
+				-- Channel 5 must be disabled when in duplex
+				elsif (adc_control_writedata(22) = '1' and adc_control_writedata(13) = '1') then
+					invalid := '1';
+				-- Duplex Channel 1 Validation
+				-- Channel 3 must be disabled when in duplex
+				elsif (adc_control_writedata(21) = '1' and adc_control_writedata(11) = '1') then
+					invalid := '1';
+				-- Duplex Channel 0 Validation
+				-- Channel 1 must be disabled when in duplex
+				elsif (adc_control_writedata(20) = '1' and adc_control_writedata(19) = '1') then
+					invalid := '1';					
+				end if;
+				adc_ctrl_invalid <= invalid; 
+			end if;
+		end if;
+	end process write_control_register;
 
-	adc_data_readdata <= "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+	read_control_register : process(clk, adc_control_read_n)
+	begin
+		if (rising_edge(clk)) then
+			if (adc_control_read_n = '1') then
+				adc_control_readdata <= adc_control;
+			end if;
+		end if;
+	end process read_control_register;
 
-	adc_control_readdata <= "00000000000000000000000000000000";
+	interrupt_control : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			data_ready_irq <= adc_ctrl_data_ready;
+			invalid_configuration_irq <= adc_ctrl_invalid;
+		end if;
+	end process interrupt_control;
+	
+	-- Generate Clock for ADC Serial Coms
+	-- Max frequency 40 MHz
+	-- Assuming 500 MHz input clock ~ 2ns
+	-- 7 rising edges per half period
+	-- 1/(7 * 2 * 2ns) = 35.71 MHz
+	FD0: freq_divider port map (clk => clk, target => serial_clk_div, output => serial_clk);
+
 
 	conduit_adc_clk <= '0';
 
 	conduit_adc_convst <= '0';
 
 	conduit_adc_sdo <= '0';
-
-	data_ready_irq <= '0';
-
-	invalid_configuration_irq <= '0';
 
 end architecture rtl; -- of adc_controller
