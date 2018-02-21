@@ -30,6 +30,7 @@ Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
+Warning: soc_system.adc_controller: The SIM_VHDL fileset must specify the top-level module name.
 Warning: soc_system.adc.reset: No synchronous edges, but has associated clock
 Info: soc_system.hps: HPS Main PLL counter settings: n = 0  m = 63
 Info: soc_system.hps: HPS peripherial PLL counter settings: n = 0  m = 39
@@ -71,6 +72,7 @@ Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
+Warning: soc_system.adc_controller: The SIM_VHDL fileset must specify the top-level module name.
 Warning: soc_system.adc.reset: No synchronous edges, but has associated clock
 Info: soc_system.hps: HPS Main PLL counter settings: n = 0  m = 63
 Info: soc_system.hps: HPS peripherial PLL counter settings: n = 0  m = 39
@@ -89,11 +91,11 @@ Info: hps: HPS Main PLL counter settings: n = 0  m = 63
 Info: hps: HPS peripherial PLL counter settings: n = 0  m = 39
 Info: hps: "soc_system" instantiated altera_hps "hps"
 Info: red_leds: Starting RTL generation for module 'soc_system_red_leds'
-Info: red_leds:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_red_leds --dir=C:/Users/dannick/AppData/Local/Temp/alt7582_5722342522200323249.dir/0211_red_leds_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7582_5722342522200323249.dir/0211_red_leds_gen//soc_system_red_leds_component_configuration.pl  --do_build_sim=0  ]
+Info: red_leds:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_red_leds --dir=C:/Users/dannick/AppData/Local/Temp/alt7583_7817058436123685626.dir/0316_red_leds_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7583_7817058436123685626.dir/0316_red_leds_gen//soc_system_red_leds_component_configuration.pl  --do_build_sim=0  ]
 Info: red_leds: Done RTL generation for module 'soc_system_red_leds'
 Info: red_leds: "soc_system" instantiated altera_avalon_pio "red_leds"
 Info: switches: Starting RTL generation for module 'soc_system_switches'
-Info: switches:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_switches --dir=C:/Users/dannick/AppData/Local/Temp/alt7582_5722342522200323249.dir/0212_switches_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7582_5722342522200323249.dir/0212_switches_gen//soc_system_switches_component_configuration.pl  --do_build_sim=0  ]
+Info: switches:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_switches --dir=C:/Users/dannick/AppData/Local/Temp/alt7583_7817058436123685626.dir/0317_switches_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7583_7817058436123685626.dir/0317_switches_gen//soc_system_switches_component_configuration.pl  --do_build_sim=0  ]
 Info: switches: Done RTL generation for module 'soc_system_switches'
 Info: switches: "soc_system" instantiated altera_avalon_pio "switches"
 Info: sysid_qsys_0: "soc_system" instantiated altera_avalon_sysid_qsys "sysid_qsys_0"
@@ -139,6 +141,6 @@ Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_a
 Info: border: "hps_io" instantiated altera_interface_generator "border"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
 Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
-Info: soc_system: Done "soc_system" with 32 modules, 91 files
+Info: soc_system: Done "soc_system" with 32 modules, 94 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis
