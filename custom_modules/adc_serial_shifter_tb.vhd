@@ -2,10 +2,10 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity freq_divider_tb is
-end entity freq_divider_tb;
+entity adc_serial_shifter_tb is
+end entity adc_serial_shifter_tb;
 
-architecture test_bench of freq_divider_tb is
+architecture test_bench of adc_serial_shifter_tb is
 	component adc_serial_shifter is
 	port (
 		clk		: in	std_logic;
@@ -40,6 +40,26 @@ begin
 		start <= '1';
 		wait for 10 ns;
 		start <= '0';
+		wait for 10 ns;
+		serial_in <= '1';
+		wait for 20 ns;
+		serial_in <= '0';
+		wait for 40 ns;
+		serial_in <= '1';
+		wait for 20 ns;
+		serial_in <= '0';
+		wait for 40 ns;
+		serial_in <= '1';
+		wait for 20 ns;
+		serial_in <= '0';
+		wait for 40 ns;
+		serial_in <= '1';
+		wait for 80 ns;
+		serial_in <= '0';
+		wait for 40 ns;
+		serial_in <= '1';
+		wait for 20 ns;
+		serial_in <= '0';
 		wait;
 	end process stimulus;
 
@@ -48,4 +68,4 @@ begin
 		half => half, ready => ready, data => data, 
 		serial_in => serial_in, serial_clk => serial_clk, serial_out => serial_out);
 		
-end architecture test_bench;
+end architecture test_bench; -- of adc_serial_shifter_tb
