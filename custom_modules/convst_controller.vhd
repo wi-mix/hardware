@@ -146,7 +146,7 @@ begin
             end if;
             if (cpw_done = '1') then
                 if(iconvst = '1') then
-                    if(imode = ONM or imode = NAP) then
+                    if(imode = ONM) then
                         iconvst <= '0';
                     else
                         iconvst <= '1';
@@ -156,6 +156,9 @@ begin
                 end if;
             end if;
             if (ct_done = '1') then
+                if(imode = NAP) then
+                    iconvst <= '0';
+                end if;
                 if(reset = '1') then
                     cpw_reset <= '1';
                     iconvst <= '0';
