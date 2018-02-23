@@ -27,6 +27,6 @@ begin
 			end if;
 		end if;
 	end process main_proc;
-	
+
 	output <= oo;
-end architecture rtl; -- of timer
+end architecture rtl; -- of freq_divider
