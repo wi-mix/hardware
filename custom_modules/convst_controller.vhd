@@ -20,11 +20,14 @@ architecture rtl of convst_controller is
 
 	signal imode	: std_logic_vector(1 downto 0) := "00";
 
-	-- Convst Signals
+	-- Convst Signal
 	signal iconvst	: std_logic := '0';
 
-	-- Done Signals
+	-- Done Signal
 	signal idone	: std_logic := '0';
+
+    -- Running Signal, Used when timers are running
+    signal irunning : std_logic := '0';
 
 
     -- Maximum Conversion Time (Minimum Required) 1.6us -> 1600ns
@@ -81,11 +84,9 @@ begin
 	main_proc : process (clk)
 	begin
 		if(rising_edge(clk)) then
-			if(set = '1') then
+			if(set = '1' and irunning = '0') then
 				imode <= mode;
-			elsif(reset = '1') then
-				idone <= '0';
-			end if;
+            end if;
 		end if;
 	end process main_proc;
 
@@ -93,7 +94,7 @@ begin
     ct_proc : process (clk)
     begin
         if(rising_edge(clk)) then
-            if(set = '1') then
+            if(set = '1' and irunning = '0') then
                 -- Set the Conversion Time Timer
                 -- If Off or Sleeping Set Conversion Time to Minimum
                 if(mode = OFF or mode = SLEEP) then
@@ -107,7 +108,7 @@ begin
                     end if;
                 end if;
             end if;
-            if (ct_done = '1') then
+            if (idone = '1') then
                 if(reset = '1') then
                     ct_reset <= '1';
                 else
@@ -117,20 +118,22 @@ begin
                 ct_reset <= '0';
             end if;
         end if;
+
+        ct_set <= set;
     end process ct_proc;
 
     ct_enable <= ct_sro;
-    ct_set <= set;
     CT_SRFF	: sr_ff port map(clk => clk, set => ct_set, reset => ct_reset, output => ct_sro);
     CT_TM	: timer port map(clk => clk, enable => ct_enable, target => ct_target, done => ct_done);
 
-    done <= ct_done;
+    idone <= ct_done;
+    done <= idone;
 
     -- CONVST HANDLING
     cpw_proc : process (clk)
     begin
         if(rising_edge(clk)) then
-            if(set = '1') then
+            if(set = '1' and irunning = '0') then
                 iconvst <= '1';
 
                 -- Setup Pulse Width Timer
@@ -155,7 +158,7 @@ begin
                     iconvst <= '0';
                 end if;
             end if;
-            if (ct_done = '1') then
+            if (idone = '1') then
                 if(imode = NAP) then
                     iconvst <= '0';
                 end if;
@@ -169,12 +172,15 @@ begin
                 cpw_reset <= '0';
             end if;
 		end if;
+
+        cpw_set <= set;
     end process cpw_proc;
 
-    cpw_set <= set;
     cpw_enable <= cpw_sro;
 	CPW_SRFF	: sr_ff port map(clk => clk, set => cpw_set, reset => cpw_reset, output => cpw_sro);
 	CPW_TM		: timer port map(clk => clk, enable => cpw_enable, target => cpw_target, done => cpw_done);
 
 	convst <= iconvst;
+
+    irunning <= '1' when cpw_enable = '1' or ct_enable = '1' else '0';
 end architecture rtl; -- of convst_controller
