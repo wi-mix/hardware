@@ -145,10 +145,14 @@ begin
                 end if;
             end if;
             if (cpw_done = '1') then
-                if(imode = ONM or imode = NAP) then
-                    iconvst <= '0';
+                if(iconvst = '1') then
+                    if(imode = ONM or imode = NAP) then
+                        iconvst <= '0';
+                    else
+                        iconvst <= '1';
+                    end if;
                 else
-                    iconvst <= '1';
+                    iconvst <= '0';
                 end if;
             end if;
             if (ct_done = '1') then
