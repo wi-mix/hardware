@@ -876,7 +876,7 @@ begin
 	rst_controller : component soc_system_rst_controller
 		generic map (
 			NUM_RESET_INPUTS          => 2,
-			OUTPUT_RESET_SYNC_EDGES   => "none",
+			OUTPUT_RESET_SYNC_EDGES   => "both",
 			SYNC_DEPTH                => 2,
 			RESET_REQUEST_PRESENT     => 0,
 			RESET_REQ_WAIT_TIME       => 1,
@@ -903,7 +903,7 @@ begin
 		port map (
 			reset_in0      => reset_reset_n_ports_inv,        -- reset_in0.reset
 			reset_in1      => hps_h2f_reset_reset_ports_inv,  -- reset_in1.reset
-			clk            => open,                           --       clk.clk
+			clk            => clk_clk,                        --       clk.clk
 			reset_out      => rst_controller_reset_out_reset, -- reset_out.reset
 			reset_req      => open,                           -- (terminated)
 			reset_req_in0  => '0',                            -- (terminated)

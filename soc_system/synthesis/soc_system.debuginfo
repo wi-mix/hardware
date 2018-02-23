@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="soc_system" kind="system" version="17.0" fabric="QSYS">
  <!-- Format version 17.0 602 (Future versions may contain additional information.) -->
- <!-- 2018.02.21.11:46:02 -->
+ <!-- 2018.02.22.16:59:08 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1519238714</value>
+  <value>1519343895</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -225,7 +225,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="synchronousEdges">
     <type>com.altera.sopcmodel.reset.Reset$Edges</type>
-    <value>NONE</value>
+    <value>BOTH</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -1486,6 +1486,12 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>mm_interconnect_0</moduleName>
     <slaveName>clk_0_clk</slaveName>
     <name>mm_interconnect_0.clk_0_clk</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>rst_controller</moduleName>
+    <slaveName>clk</slaveName>
+    <name>rst_controller.clk</name>
    </clockDomainMember>
    <clockDomainMember>
     <isBridge>false</isBridge>
@@ -46295,7 +46301,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1519238714</value>
+   <value>1519343895</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -46315,7 +46321,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1519238714</value>
+   <value>1519343895</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -46331,7 +46337,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1519238714</value>
+   <value>1519343895</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -51270,7 +51276,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="OUTPUT_RESET_SYNC_EDGES">
    <type>java.lang.String</type>
-   <value>none</value>
+   <value>both</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -51641,7 +51647,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="synchronousEdges">
     <type>com.altera.sopcmodel.reset.Reset$Edges</type>
-    <value>NONE</value>
+    <value>BOTH</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -53626,6 +53632,33 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>reset_in1</endConnectionPoint>
  </connection>
  <connection
+   name="clk_0.clk/rst_controller.clk"
+   kind="clock"
+   version="17.0"
+   start="clk_0.clk"
+   end="rst_controller.clk">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>clk_0</startModule>
+  <startConnectionPoint>clk</startConnectionPoint>
+  <endModule>rst_controller</endModule>
+  <endConnectionPoint>clk</endConnectionPoint>
+ </connection>
+ <connection
    name="rst_controller_001.reset_out/hex0.reset"
    kind="reset"
    version="17.0"
@@ -54301,7 +54334,7 @@ parameters are a RESULT of the module parameters. -->
   <version>17.0</version>
  </plugin>
  <plugin>
-  <instanceCount>3</instanceCount>
+  <instanceCount>4</instanceCount>
   <name>clock</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
@@ -54325,5 +54358,5 @@ parameters are a RESULT of the module parameters. -->
   <version>17.0</version>
  </plugin>
  <reportVersion>17.0 602</reportVersion>
- <uniqueIdentifier>00000000000000E000000161B9AF2C43</uniqueIdentifier>
+ <uniqueIdentifier>00000000000000E000000161BFF41C52</uniqueIdentifier>
 </EnsembleReport>
