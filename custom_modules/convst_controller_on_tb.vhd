@@ -49,7 +49,15 @@ begin
 		reset <= '1';
 		wait for 2 ns;
 		reset <= '0';
-		wait for 1600 ns;
+        wait for 200 ns;
+        reset <= '1';
+        wait for 2 ns;
+        reset <= '0';
+		wait for 1200 ns;
+        reset <= '1';
+        wait for 2 ns;
+        reset <= '0';
+        wait for 200 ns;
         reset <= '1';
         wait for 2 ns;
         reset <= '0';
