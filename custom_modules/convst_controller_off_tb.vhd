@@ -4,10 +4,10 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity convst_controller_on_tb is
-end entity convst_controller_on_tb;
+entity convst_controller_off_tb is
+end entity convst_controller_off_tb;
 
-architecture test_bench of convst_controller_on_tb is
+architecture test_bench of convst_controller_off_tb is
 	component convst_controller is
 	port (
 		clk		: in	std_logic;
@@ -48,4 +48,4 @@ begin
 	CC: convst_controller port map (clk => clk, set => set, reset => reset,
 		mode => mode, target => target, convst => convst, done => done);
 
-end architecture test_bench; -- of convst_controller_on_tb
+end architecture test_bench; -- of convst_controller_off_tb
