@@ -9,7 +9,7 @@ use IEEE.numeric_std.all;
 entity soc_system_rst_controller is
 	generic (
 		NUM_RESET_INPUTS          : integer := 2;
-		OUTPUT_RESET_SYNC_EDGES   : string  := "none";
+		OUTPUT_RESET_SYNC_EDGES   : string  := "both";
 		SYNC_DEPTH                : integer := 2;
 		RESET_REQUEST_PRESENT     : integer := 0;
 		RESET_REQ_WAIT_TIME       : integer := 1;

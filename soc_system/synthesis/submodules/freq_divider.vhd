@@ -13,7 +13,7 @@ entity freq_divider is
 end entity freq_divider;
 
 architecture rtl of freq_divider is
-	signal count 	: unsigned(31 downto 0) := x"00000000";
+	signal count 	: unsigned(31 downto 0) := x"00000001";
 	signal oo 		: std_logic := '0';
 begin
 	main_proc : process (clk)
@@ -22,7 +22,7 @@ begin
 			if (count < target) then
 				count <= count + 1;
 			else
-				count <= x"00000000";
+				count <= x"00000001";
 				oo <= not oo;
 			end if;
 		end if;

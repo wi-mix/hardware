@@ -15,12 +15,12 @@ end entity timer;
 
 architecture rtl of timer is
 	signal trg 		: unsigned(31 downto 0) := x"00000000";
-	signal count 	: unsigned(31 downto 0) := x"00000000";
+	signal count 	: unsigned(31 downto 0) := x"00000001";
 begin
 	main_proc : process (enable, clk)
 	begin
 		if(enable = '0') then
-			count <= x"00000000";
+			count <= x"00000001";
 			trg <= target;
 			done <= '0';
 		elsif(enable = '1' and rising_edge(clk)) then

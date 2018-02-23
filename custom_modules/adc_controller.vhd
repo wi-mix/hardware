@@ -39,17 +39,17 @@ architecture rtl of adc_controller is
 	alias adc_data7 : std_logic_vector is adc_data_readdata(127 downto 112);
 
 	-- Control Port Aliases
-	
+
 	-- IRQ Controls
 	alias adc_ctrl_data_ready   : std_logic is adc_control(31);
 	alias adc_ctrl_invalid      : std_logic is adc_control(30);
-	
+
 	-- Power Mode
 	alias adc_ctrl_mode         : std_logic_vector is adc_control(29 downto 28);
-	
+
 	-- Averaging Controls
 	alias adc_ctrl_average      : std_logic_vector is adc_control(27 downto 26);
-	
+
 	-- Duplex Controls
 	alias adc_ctrl_sign         : std_logic is adc_control(25);
 	alias adc_ctrl_polarity		: std_logic is adc_control(24);
@@ -59,7 +59,7 @@ architecture rtl of adc_controller is
 	alias adc_ctrl_chan_enable	: std_logic_vector is adc_control(15 downto 8);
 
 	alias adc_ctrl_freq_div	: std_logic_vector is adc_control(7 downto 0);
-	
+
 	-- Serial Shifter Signals
 	-- Serial Shifter Clock
 	signal ass_clk 		: std_logic;
@@ -70,6 +70,11 @@ architecture rtl of adc_controller is
 	signal ass_data		: std_logic_vector(11 downto 0);
 	signal ass_cmd		: std_logic_vector(5 downto 0);
 
+    -- Conversion Controller Signals
+    signal cc_set   : std_logic;
+    signal cc_reset : std_logic;
+    signal cc_done  : std_logic;
+
 	-- Components
 	component freq_divider is
 	port (
@@ -78,7 +83,7 @@ architecture rtl of adc_controller is
 		output	: out	std_logic
 	);
 	end component freq_divider;
-	
+
 	component adc_serial_shifter is
 	port (
 		clk		: in	std_logic;
@@ -94,6 +99,17 @@ architecture rtl of adc_controller is
 	);
 	end component adc_serial_shifter;
 
+    component convst_controller is
+	port (
+		clk		: in	std_logic;
+		set		: in	std_logic;
+		reset	: in	std_logic;
+		mode	: in	std_logic_vector(1 downto 0);
+		target	: in 	unsigned(31 downto 0);
+		convst	: out 	std_logic;
+		done	: out	std_logic
+	);
+	end component convst_controller;
 begin
 
 	write_control_register	: process(clk, reset_n, adc_control_write_n)
@@ -106,7 +122,7 @@ begin
 				-- Store Settings
 				adc_control(31) <= adc_control_writedata(31);
 				adc_control(29 downto 0) <= adc_control_writedata(29 downto 0);
-				
+
 				-- Validate Input
 				-- Duplex Channel 3 Validation
 				-- Channel 7 must be disabled when in duplex
@@ -123,9 +139,9 @@ begin
 				-- Duplex Channel 0 Validation
 				-- Channel 1 must be disabled when in duplex
 				elsif (adc_control_writedata(20) = '1' and adc_control_writedata(19) = '1') then
-					invalid := '1';					
+					invalid := '1';
 				end if;
-				adc_ctrl_invalid <= invalid; 
+				adc_ctrl_invalid <= invalid;
 			end if;
 		end if;
 	end process write_control_register;
@@ -146,14 +162,14 @@ begin
 			invalid_configuration_irq <= adc_ctrl_invalid;
 		end if;
 	end process interrupt_control;
-	
+
 	-- Generate Clock for ADC Serial Coms
 	-- Max frequency 40 MHz
 	-- Assuming 500 MHz input clock ~ 2ns
 	-- 7 rising edges per half period
 	-- 1/(7 * 2 * 2ns) = 35.71 MHz
 	FD0: freq_divider port map (clk => clk, target => ass_clk_div, output => ass_clk);
-	
+
 	ASS: adc_serial_shifter port map (
 		clk 	=> ass_clk,
 		start 	=> ass_start,
@@ -166,6 +182,7 @@ begin
 		serial_clk 	=> conduit_adc_clk,
 		serial_out 	=> conduit_adc_sdo);
 
-	conduit_adc_convst <= '0';
+    CC: convst_controller port map (clk => clk, set => cc_set, reset => cc_reset,
+        mode => adc_ctrl_mode, target => x"00000000", convst => conduit_adc_convst, done => cc_done);
 
 end architecture rtl; -- of adc_controller
