@@ -2,7 +2,7 @@ Info: Starting: Create block symbol file (.bsf)
 Info: qsys-generate C:\Users\dannick\Documents\GitHub\hardware\soc_system.qsys --block-symbol-file --output-directory=C:\Users\dannick\Documents\GitHub\hardware\soc_system --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading hardware/soc_system.qsys
 Progress: Reading input file
-Progress: Adding adc [adc_controller 1.0]
+Progress: Adding adc [altera_up_avalon_adc 17.0]
 Progress: Parameterizing module adc
 Progress: Adding clk_0 [clock_source 17.0]
 Progress: Parameterizing module clk_0
@@ -42,7 +42,7 @@ Info: Starting: Create HDL design files for synthesis
 Info: qsys-generate C:\Users\dannick\Documents\GitHub\hardware\soc_system.qsys --synthesis=VHDL --output-directory=C:\Users\dannick\Documents\GitHub\hardware\soc_system\synthesis --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading hardware/soc_system.qsys
 Progress: Reading input file
-Progress: Adding adc [adc_controller 1.0]
+Progress: Adding adc [altera_up_avalon_adc 17.0]
 Progress: Parameterizing module adc
 Progress: Adding clk_0 [clock_source 17.0]
 Progress: Parameterizing module clk_0
@@ -80,18 +80,20 @@ Warning: hps.f2h_irq0: Cannot connect clock for irq_mapper.sender
 Warning: hps.f2h_irq0: Cannot connect reset for irq_mapper.sender
 Warning: hps.f2h_irq1: Cannot connect clock for irq_mapper_001.sender
 Warning: hps.f2h_irq1: Cannot connect reset for irq_mapper_001.sender
-Info: adc: "soc_system" instantiated adc_controller "adc"
+Info: adc: Starting Generation of ADC Controller for DE-series Board
+Info: adc: C:/intelfpga/17.0/ip/altera/university_program/input_output/altera_up_avalon_adc/hdl/altera_up_avalon_adv_adc.v C:/Users/dannick/AppData/Local/Temp/alt7585_4907120454604545795.dir/0002_sopcgen/soc_system_adc.v
+Info: adc: "soc_system" instantiated altera_up_avalon_adc "adc"
 Info: hex0: "soc_system" instantiated seven_seg "hex0"
 Info: hps: "Running  for module: hps"
 Info: hps: HPS Main PLL counter settings: n = 0  m = 63
 Info: hps: HPS peripherial PLL counter settings: n = 0  m = 39
 Info: hps: "soc_system" instantiated altera_hps "hps"
 Info: red_leds: Starting RTL generation for module 'soc_system_red_leds'
-Info: red_leds:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_red_leds --dir=C:/Users/dannick/AppData/Local/Temp/alt7584_1396690793906445124.dir/0082_red_leds_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7584_1396690793906445124.dir/0082_red_leds_gen//soc_system_red_leds_component_configuration.pl  --do_build_sim=0  ]
+Info: red_leds:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_red_leds --dir=C:/Users/dannick/AppData/Local/Temp/alt7585_4907120454604545795.dir/0006_red_leds_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7585_4907120454604545795.dir/0006_red_leds_gen//soc_system_red_leds_component_configuration.pl  --do_build_sim=0  ]
 Info: red_leds: Done RTL generation for module 'soc_system_red_leds'
 Info: red_leds: "soc_system" instantiated altera_avalon_pio "red_leds"
 Info: switches: Starting RTL generation for module 'soc_system_switches'
-Info: switches:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_switches --dir=C:/Users/dannick/AppData/Local/Temp/alt7584_1396690793906445124.dir/0083_switches_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7584_1396690793906445124.dir/0083_switches_gen//soc_system_switches_component_configuration.pl  --do_build_sim=0  ]
+Info: switches:   Generation command is [exec C:/intelfpga/17.0/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/17.0/quartus/bin64/perl/lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin/europa -I C:/intelfpga/17.0/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/17.0/quartus/sopc_builder/bin -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/17.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_switches --dir=C:/Users/dannick/AppData/Local/Temp/alt7585_4907120454604545795.dir/0007_switches_gen/ --quartus_dir=C:/intelfpga/17.0/quartus --verilog --config=C:/Users/dannick/AppData/Local/Temp/alt7585_4907120454604545795.dir/0007_switches_gen//soc_system_switches_component_configuration.pl  --do_build_sim=0  ]
 Info: switches: Done RTL generation for module 'soc_system_switches'
 Info: switches: "soc_system" instantiated altera_avalon_pio "switches"
 Info: sysid_qsys_0: "soc_system" instantiated altera_avalon_sysid_qsys "sysid_qsys_0"
@@ -105,23 +107,20 @@ Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_008: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_009: Inserting error_adapter: error_adapter_0
-Info: avalon_st_adapter_010: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_0: "soc_system" instantiated altera_mm_interconnect "mm_interconnect_0"
 Info: irq_mapper: "soc_system" instantiated altera_irq_mapper "irq_mapper"
-Info: irq_mapper_001: "soc_system" instantiated altera_irq_mapper "irq_mapper_001"
 Info: rst_controller: "soc_system" instantiated altera_reset_controller "rst_controller"
 Info: fpga_interfaces: "hps" instantiated altera_interface_generator "fpga_interfaces"
 Info: hps_io: "hps" instantiated altera_hps_io "hps_io"
-Info: adc_adc_control_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "adc_adc_control_translator"
+Info: adc_adc_slave_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "adc_adc_slave_translator"
 Info: hps_h2f_lw_axi_master_agent: "mm_interconnect_0" instantiated altera_merlin_axi_master_ni "hps_h2f_lw_axi_master_agent"
-Info: adc_adc_control_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "adc_adc_control_agent"
-Info: adc_adc_control_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "adc_adc_control_agent_rsp_fifo"
+Info: adc_adc_slave_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "adc_adc_slave_agent"
+Info: adc_adc_slave_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "adc_adc_slave_agent_rsp_fifo"
 Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
 Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
-Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
 Info: hps_h2f_lw_axi_master_wr_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "hps_h2f_lw_axi_master_wr_limiter"
 Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_avalon_sc_fifo.v
-Info: adc_adc_control_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "adc_adc_control_burst_adapter"
+Info: adc_adc_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "adc_adc_slave_burst_adapter"
 Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
 Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_avalon_st_pipeline_base.v
 Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
@@ -129,14 +128,9 @@ Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_m
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
 Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_merlin_arbitrator.sv
-Info: adc_adc_data_rsp_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "adc_adc_data_rsp_width_adapter"
-Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file C:/Users/dannick/Documents/GitHub/hardware/soc_system/synthesis/submodules/altera_merlin_burst_uncompressor.sv
 Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
-Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: border: "hps_io" instantiated altera_interface_generator "border"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
-Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
-Info: soc_system: Done "soc_system" with 32 modules, 94 files
+Info: soc_system: Done "soc_system" with 27 modules, 87 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

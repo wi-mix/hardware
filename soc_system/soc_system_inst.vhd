@@ -1,9 +1,5 @@
 	component soc_system is
 		port (
-			adc_export_clk                      : out   std_logic;                                        -- export_clk
-			adc_export_convst                   : out   std_logic;                                        -- export_convst
-			adc_export_sdo                      : out   std_logic;                                        -- export_sdo
-			adc_export_sdi                      : in    std_logic                     := 'X';             -- export_sdi
 			clk_clk                             : in    std_logic                     := 'X';             -- clk
 			hex0_export                         : out   std_logic_vector(6 downto 0);                     -- export
 			hex1_export                         : out   std_logic_vector(6 downto 0);                     -- export
@@ -78,16 +74,16 @@
 			memory_oct_rzqin                    : in    std_logic                     := 'X';             -- oct_rzqin
 			red_leds_external_connection_export : out   std_logic_vector(9 downto 0);                     -- export
 			reset_reset_n                       : in    std_logic                     := 'X';             -- reset_n
-			switches_external_connection_export : in    std_logic_vector(9 downto 0)  := (others => 'X')  -- export
+			switches_external_connection_export : in    std_logic_vector(9 downto 0)  := (others => 'X'); -- export
+			adc_external_interface_sclk         : out   std_logic;                                        -- sclk
+			adc_external_interface_cs_n         : out   std_logic;                                        -- cs_n
+			adc_external_interface_dout         : in    std_logic                     := 'X';             -- dout
+			adc_external_interface_din          : out   std_logic                                         -- din
 		);
 	end component soc_system;
 
 	u0 : component soc_system
 		port map (
-			adc_export_clk                      => CONNECTED_TO_adc_export_clk,                      --                          adc.export_clk
-			adc_export_convst                   => CONNECTED_TO_adc_export_convst,                   --                             .export_convst
-			adc_export_sdo                      => CONNECTED_TO_adc_export_sdo,                      --                             .export_sdo
-			adc_export_sdi                      => CONNECTED_TO_adc_export_sdi,                      --                             .export_sdi
 			clk_clk                             => CONNECTED_TO_clk_clk,                             --                          clk.clk
 			hex0_export                         => CONNECTED_TO_hex0_export,                         --                         hex0.export
 			hex1_export                         => CONNECTED_TO_hex1_export,                         --                         hex1.export
@@ -162,6 +158,10 @@
 			memory_oct_rzqin                    => CONNECTED_TO_memory_oct_rzqin,                    --                             .oct_rzqin
 			red_leds_external_connection_export => CONNECTED_TO_red_leds_external_connection_export, -- red_leds_external_connection.export
 			reset_reset_n                       => CONNECTED_TO_reset_reset_n,                       --                        reset.reset_n
-			switches_external_connection_export => CONNECTED_TO_switches_external_connection_export  -- switches_external_connection.export
+			switches_external_connection_export => CONNECTED_TO_switches_external_connection_export, -- switches_external_connection.export
+			adc_external_interface_sclk         => CONNECTED_TO_adc_external_interface_sclk,         --       adc_external_interface.sclk
+			adc_external_interface_cs_n         => CONNECTED_TO_adc_external_interface_cs_n,         --                             .cs_n
+			adc_external_interface_dout         => CONNECTED_TO_adc_external_interface_dout,         --                             .dout
+			adc_external_interface_din          => CONNECTED_TO_adc_external_interface_din           --                             .din
 		);
 

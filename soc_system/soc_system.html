@@ -67,7 +67,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </table>
   <table class="blueBar">
    <tr>
-    <td class="l">2018.02.22.17:16:50</td>
+    <td class="l">2018.02.23.14:45:23</td>
     <td class="r">Datasheet</td>
    </tr>
   </table>
@@ -89,7 +89,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      <br/>All Components
      <br/>&#160;&#160;
      <a href="#module_adc"><b>adc</b>
-     </a> adc_controller 1.0
+     </a> altera_up_avalon_adc 17.0
      <br/>&#160;&#160;
      <a href="#module_hex0"><b>hex0</b>
      </a> seven_seg 1.0
@@ -158,18 +158,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="empty"></td>
    </tr>
    <tr>
-    <td class="slavem">adc_data&#160;</td>
-    <td class="addr"><span style="color:#989898">0x</span>00000200</td>
+    <td class="slaveb">adc_slave&#160;</td>
+    <td class="addr"><span style="color:#989898">0x</span>00001200</td>
     <td class="empty"></td>
-    <td class="addr"><span style="color:#989898">0x</span>ff200200</td>
-    <td class="addr"><span style="color:#989898">0x</span>ff200200</td>
-   </tr>
-   <tr>
-    <td class="slavem">adc_control&#160;</td>
-    <td class="addr"><span style="color:#989898">0x</span>00002200</td>
-    <td class="empty"></td>
-    <td class="addr"><span style="color:#989898">0x</span>ff202200</td>
-    <td class="addr"><span style="color:#989898">0x</span>ff202200</td>
+    <td class="addr"><span style="color:#989898">0x</span>ff201200</td>
+    <td class="addr"><span style="color:#989898">0x</span>ff201200</td>
    </tr>
    <tr>
     <td class="slavemodule">&#160;
@@ -1036,25 +1029,19 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   <a name="module_adc"> </a>
   <div>
    <hr/>
-   <h2>adc</h2>adc_controller v1.0
+   <h2>adc</h2>altera_up_avalon_adc v17.0
    <br/>
    <div class="greydiv">
     <table class="connectionboxes">
      <tr>
-      <td class="neighbor" rowspan="6">
+      <td class="neighbor" rowspan="4">
        <a href="#module_hps_bridges">hps_bridges</a>
       </td>
       <td class="from">h2f_lw&#160;&#160;</td>
-      <td class="main" rowspan="16">adc</td>
+      <td class="main" rowspan="9">adc</td>
      </tr>
      <tr>
-      <td class="to">&#160;&#160;adc_control</td>
-     </tr>
-     <tr>
-      <td class="from">h2f_lw&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td class="to">&#160;&#160;adc_data</td>
+      <td class="to">&#160;&#160;adc_slave</td>
      </tr>
      <tr>
       <td class="from">h2f_reset&#160;&#160;</td>
@@ -1072,31 +1059,13 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td class="from">clk&#160;&#160;</td>
      </tr>
      <tr>
-      <td class="to">&#160;&#160;clock</td>
+      <td class="to">&#160;&#160;clk</td>
      </tr>
      <tr>
       <td class="from">clk_reset&#160;&#160;</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset</td>
-     </tr>
-     <tr style="height:6px">
-      <td></td>
-     </tr>
-     <tr>
-      <td class="neighbor" rowspan="4">
-       <a href="#module_hps_arm_gic_0">hps_arm_gic_0</a>
-      </td>
-      <td class="from">f2h_irq_0_irq_rx_offset_40&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td class="to">&#160;&#160;data_ready</td>
-     </tr>
-     <tr>
-      <td class="from">f2h_irq_0_irq_rx_offset_40&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td class="to">&#160;&#160;invalid_configuration</td>
      </tr>
     </table>
    </div>
@@ -1108,8 +1077,48 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <h2>Parameters</h2>
       <table>
        <tr>
+        <td class="parametername">board</td>
+        <td class="parametervalue">DE1-SoC</td>
+       </tr>
+       <tr>
+        <td class="parametername">board_rev</td>
+        <td class="parametervalue">F or newer</td>
+       </tr>
+       <tr>
+        <td class="parametername">sclk_freq</td>
+        <td class="parametervalue">12.5</td>
+       </tr>
+       <tr>
+        <td class="parametername">tsclk</td>
+        <td class="parametervalue">4</td>
+       </tr>
+       <tr>
+        <td class="parametername">numch_</td>
+        <td class="parametervalue">8</td>
+       </tr>
+       <tr>
+        <td class="parametername">numch</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">max10pllmultby</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">max10plldivby</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_DEVICE_FAMILY</td>
+        <td class="parametervalue">CYCLONEV</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_CLK_CLOCK_RATE</td>
+        <td class="parametervalue">50000000</td>
+       </tr>
+       <tr>
         <td class="parametername">deviceFamily</td>
-        <td class="parametervalue">UNKNOWN</td>
+        <td class="parametervalue">Cyclone V</td>
        </tr>
        <tr>
         <td class="parametername">generateLegacySim</td>
@@ -20663,7 +20672,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_hps_clk_0">hps_clk_0</a>
       </td>
       <td class="from">clk_reset&#160;&#160;</td>
-      <td class="main" rowspan="64">hps_bridges</td>
+      <td class="main" rowspan="62">hps_bridges</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset_sink</td>
@@ -20714,24 +20723,14 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="from">h2f_lw&#160;&#160;</td>
-      <td class="neighbor" rowspan="6">
+      <td class="neighbor" rowspan="4">
        <a href="#module_adc">adc</a>
       </td>
      </tr>
      <tr>
       <td></td>
       <td></td>
-      <td class="to">&#160;&#160;adc_control</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="from">h2f_lw&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="to">&#160;&#160;adc_data</td>
+      <td class="to">&#160;&#160;adc_slave</td>
      </tr>
      <tr>
       <td></td>
@@ -22677,7 +22676,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_hps_clk_0">hps_clk_0</a>
       </td>
       <td class="from">clk_reset&#160;&#160;</td>
-      <td class="main" rowspan="112">hps_arm_gic_0</td>
+      <td class="main" rowspan="107">hps_arm_gic_0</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset_sink</td>
@@ -23220,32 +23219,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;interrupt_sender</td>
-     </tr>
-     <tr style="height:6px">
-      <td></td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="from">f2h_irq_0_irq_rx_offset_40&#160;&#160;</td>
-      <td class="neighbor" rowspan="4">
-       <a href="#module_adc">adc</a>
-      </td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="to">&#160;&#160;data_ready</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="from">f2h_irq_0_irq_rx_offset_40&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="to">&#160;&#160;invalid_configuration</td>
      </tr>
     </table>
    </div>
@@ -28642,7 +28615,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">timestamp</td>
-        <td class="parametervalue">1519345009</td>
+        <td class="parametervalue">1519422321</td>
        </tr>
        <tr>
         <td class="parametername">deviceFamily</td>
@@ -28667,7 +28640,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">TIMESTAMP</td>
-        <td class="parametervalue">1519345009</td>
+        <td class="parametervalue">1519422321</td>
        </tr>
       </table>
      </td>
@@ -28676,8 +28649,8 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </div>
   <table class="blueBar">
    <tr>
-    <td class="l">generation took 0.00 seconds</td>
-    <td class="r">rendering took 0.61 seconds</td>
+    <td class="l">generation took 0.03 seconds</td>
+    <td class="r">rendering took 0.77 seconds</td>
    </tr>
   </table>
  </body>

@@ -1,9 +1,5 @@
 
 module soc_system (
-	adc_export_clk,
-	adc_export_convst,
-	adc_export_sdo,
-	adc_export_sdi,
 	clk_clk,
 	hex0_export,
 	hex1_export,
@@ -78,12 +74,12 @@ module soc_system (
 	memory_oct_rzqin,
 	red_leds_external_connection_export,
 	reset_reset_n,
-	switches_external_connection_export);	
+	switches_external_connection_export,
+	adc_external_interface_sclk,
+	adc_external_interface_cs_n,
+	adc_external_interface_dout,
+	adc_external_interface_din);	
 
-	output		adc_export_clk;
-	output		adc_export_convst;
-	output		adc_export_sdo;
-	input		adc_export_sdi;
 	input		clk_clk;
 	output	[6:0]	hex0_export;
 	output	[6:0]	hex1_export;
@@ -159,4 +155,8 @@ module soc_system (
 	output	[9:0]	red_leds_external_connection_export;
 	input		reset_reset_n;
 	input	[9:0]	switches_external_connection_export;
+	output		adc_external_interface_sclk;
+	output		adc_external_interface_cs_n;
+	input		adc_external_interface_dout;
+	output		adc_external_interface_din;
 endmodule

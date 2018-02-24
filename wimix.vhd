@@ -139,7 +139,12 @@
 			HEX2_N					: out std_logic_vector(6 downto 0);
 			HEX3_N					: out std_logic_vector(6 downto 0);
 			HEX4_N					: out std_logic_vector(6 downto 0);
-			HEX5_N					: out std_logic_vector(6 downto 0)
+			HEX5_N					: out std_logic_vector(6 downto 0);
+			
+			ADC_SCLK 				: out std_logic;
+			ADC_CS_N				: out std_logic;
+			ADC_DOUT				: in  std_logic;
+			ADC_DIN					: out std_logic
 	);
 end wimix;
 
@@ -219,13 +224,17 @@ architecture rtl of wimix is
             hps_io_hps_io_gpio_inst_GPIO54      : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO54
             hps_io_hps_io_gpio_inst_GPIO61      : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO61
             red_leds_external_connection_export : out   std_logic_vector(9 downto 0);                     -- export
-				switches_external_connection_export : in    std_logic_vector(9 downto 0);
-				hex0_export : out   std_logic_vector(6 downto 0);                         
-				hex1_export : out   std_logic_vector(6 downto 0);                        
-				hex2_export : out   std_logic_vector(6 downto 0);                        
-				hex3_export : out   std_logic_vector(6 downto 0);                        
-				hex4_export : out   std_logic_vector(6 downto 0);                        
-				hex5_export : out   std_logic_vector(6 downto 0)                        
+			switches_external_connection_export : in    std_logic_vector(9 downto 0);
+			hex0_export : out   std_logic_vector(6 downto 0);                         
+			hex1_export : out   std_logic_vector(6 downto 0);                        
+			hex2_export : out   std_logic_vector(6 downto 0);                        
+			hex3_export : out   std_logic_vector(6 downto 0);                        
+			hex4_export : out   std_logic_vector(6 downto 0);                        
+			hex5_export : out   std_logic_vector(6 downto 0);
+            adc_external_interface_sclk         : out   std_logic;
+            adc_external_interface_cs_n         : out   std_logic;
+            adc_external_interface_dout         : in    std_logic:= 'X';
+            adc_external_interface_din          : out	std_logic
         );
     end component soc_system;
 
@@ -318,7 +327,11 @@ begin
 						hex2_export                         => HEX2_N,
 						hex3_export                         => HEX3_N,
 						hex4_export                         => HEX4_N,
-						hex5_export                         => HEX5_N
+						hex5_export                         => HEX5_N,
+						adc_external_interface_sclk         => ADC_SCLK,
+						adc_external_interface_cs_n         => ADC_CS_N,
+						adc_external_interface_dout         => ADC_DOUT,
+						adc_external_interface_din          => ADC_DIN
         );
 
 

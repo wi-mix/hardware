@@ -1,9 +1,9 @@
 	component soc_system is
 		port (
-			adc_export_clk                      : out   std_logic;                                        -- export_clk
-			adc_export_convst                   : out   std_logic;                                        -- export_convst
-			adc_export_sdo                      : out   std_logic;                                        -- export_sdo
-			adc_export_sdi                      : in    std_logic                     := 'X';             -- export_sdi
+			adc_external_interface_sclk         : out   std_logic;                                        -- sclk
+			adc_external_interface_cs_n         : out   std_logic;                                        -- cs_n
+			adc_external_interface_dout         : in    std_logic                     := 'X';             -- dout
+			adc_external_interface_din          : out   std_logic;                                        -- din
 			clk_clk                             : in    std_logic                     := 'X';             -- clk
 			hex0_export                         : out   std_logic_vector(6 downto 0);                     -- export
 			hex1_export                         : out   std_logic_vector(6 downto 0);                     -- export

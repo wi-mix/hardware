@@ -1,8 +1,4 @@
 	soc_system u0 (
-		.adc_export_clk                      (<connected-to-adc_export_clk>),                      //                          adc.export_clk
-		.adc_export_convst                   (<connected-to-adc_export_convst>),                   //                             .export_convst
-		.adc_export_sdo                      (<connected-to-adc_export_sdo>),                      //                             .export_sdo
-		.adc_export_sdi                      (<connected-to-adc_export_sdi>),                      //                             .export_sdi
 		.clk_clk                             (<connected-to-clk_clk>),                             //                          clk.clk
 		.hex0_export                         (<connected-to-hex0_export>),                         //                         hex0.export
 		.hex1_export                         (<connected-to-hex1_export>),                         //                         hex1.export
@@ -77,6 +73,10 @@
 		.memory_oct_rzqin                    (<connected-to-memory_oct_rzqin>),                    //                             .oct_rzqin
 		.red_leds_external_connection_export (<connected-to-red_leds_external_connection_export>), // red_leds_external_connection.export
 		.reset_reset_n                       (<connected-to-reset_reset_n>),                       //                        reset.reset_n
-		.switches_external_connection_export (<connected-to-switches_external_connection_export>)  // switches_external_connection.export
+		.switches_external_connection_export (<connected-to-switches_external_connection_export>), // switches_external_connection.export
+		.adc_external_interface_sclk         (<connected-to-adc_external_interface_sclk>),         //       adc_external_interface.sclk
+		.adc_external_interface_cs_n         (<connected-to-adc_external_interface_cs_n>),         //                             .cs_n
+		.adc_external_interface_dout         (<connected-to-adc_external_interface_dout>),         //                             .dout
+		.adc_external_interface_din          (<connected-to-adc_external_interface_din>)           //                             .din
 	);
 

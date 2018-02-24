@@ -43,6 +43,19 @@
          type = "String";
       }
    }
+   element adc.adc_slave
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4608";
+         type = "String";
+      }
+   }
    element adc.data_ready
    {
       datum _tags
@@ -293,15 +306,11 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
- <interface name="adc" internal="adc.conduit_adc" type="conduit" dir="end" />
- <interface name="adc_controller_0_adc_control" internal="adc.adc_control1" />
- <interface name="adc_controller_0_adc_data" internal="adc.adc_data1" />
- <interface name="adc_controller_0_conduit_adc" internal="adc.conduit_adc1" />
- <interface name="adc_controller_0_data_ready" internal="adc.data_ready1" />
  <interface
-   name="adc_controller_0_invalid_configuration"
-   internal="adc.invalid_configuration1" />
- <interface name="adc_controller_0_reset" internal="adc.reset1" />
+   name="adc_external_interface"
+   internal="adc.external_interface"
+   type="conduit"
+   dir="end" />
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
  <interface name="hex0" internal="hex0.conduit" type="conduit" dir="end" />
  <interface name="hex1" internal="hex1.conduit" type="conduit" dir="end" />
@@ -322,7 +331,14 @@
    internal="switches.external_connection"
    type="conduit"
    dir="end" />
- <module name="adc" kind="adc_controller" version="1.0" enabled="1" />
+ <module name="adc" kind="altera_up_avalon_adc" version="17.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="board" value="DE1-SoC" />
+  <parameter name="board_rev" value="F or newer" />
+  <parameter name="numch_" value="8" />
+  <parameter name="sclk_freq" value="12.5" />
+ </module>
  <module name="clk_0" kind="clock_source" version="17.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -904,18 +920,9 @@
    kind="avalon"
    version="17.0"
    start="hps.h2f_lw_axi_master"
-   end="adc.adc_control">
+   end="adc.adc_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x2200" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="17.0"
-   start="hps.h2f_lw_axi_master"
-   end="adc.adc_data">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0200" />
+  <parameter name="baseAddress" value="0x1200" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1002,32 +1009,18 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="red_leds.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="sysid_qsys_0.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="switches.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="adc.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex0.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex1.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex2.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex3.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex4.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex5.clock" />
- <connection kind="clock" version="17.0" start="clk_0.clk" end="adc.clock" />
  <connection
    kind="clock"
    version="17.0"
    start="clk_0.clk"
    end="hps.h2f_lw_axi_clock" />
- <connection
-   kind="interrupt"
-   version="17.0"
-   start="hps.f2h_irq0"
-   end="adc.data_ready">
-  <parameter name="irqNumber" value="0" />
- </connection>
- <connection
-   kind="interrupt"
-   version="17.0"
-   start="hps.f2h_irq0"
-   end="adc.invalid_configuration">
-  <parameter name="irqNumber" value="1" />
- </connection>
  <connection
    kind="reset"
    version="17.0"
