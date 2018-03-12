@@ -1,4 +1,8 @@
 	soc_system u0 (
+		.adc_external_interface_sclk         (<connected-to-adc_external_interface_sclk>),         //       adc_external_interface.sclk
+		.adc_external_interface_cs_n         (<connected-to-adc_external_interface_cs_n>),         //                             .cs_n
+		.adc_external_interface_dout         (<connected-to-adc_external_interface_dout>),         //                             .dout
+		.adc_external_interface_din          (<connected-to-adc_external_interface_din>),          //                             .din
 		.clk_clk                             (<connected-to-clk_clk>),                             //                          clk.clk
 		.hex0_export                         (<connected-to-hex0_export>),                         //                         hex0.export
 		.hex1_export                         (<connected-to-hex1_export>),                         //                         hex1.export
@@ -71,12 +75,12 @@
 		.memory_mem_odt                      (<connected-to-memory_mem_odt>),                      //                             .mem_odt
 		.memory_mem_dm                       (<connected-to-memory_mem_dm>),                       //                             .mem_dm
 		.memory_oct_rzqin                    (<connected-to-memory_oct_rzqin>),                    //                             .oct_rzqin
+		.multi_pwm_export_pwm1               (<connected-to-multi_pwm_export_pwm1>),               //                    multi_pwm.export_pwm1
+		.multi_pwm_export_pwm2               (<connected-to-multi_pwm_export_pwm2>),               //                             .export_pwm2
+		.multi_pwm_export_pwm3               (<connected-to-multi_pwm_export_pwm3>),               //                             .export_pwm3
+		.multi_pwm_export_pwm4               (<connected-to-multi_pwm_export_pwm4>),               //                             .export_pwm4
 		.red_leds_external_connection_export (<connected-to-red_leds_external_connection_export>), // red_leds_external_connection.export
 		.reset_reset_n                       (<connected-to-reset_reset_n>),                       //                        reset.reset_n
-		.switches_external_connection_export (<connected-to-switches_external_connection_export>), // switches_external_connection.export
-		.adc_external_interface_sclk         (<connected-to-adc_external_interface_sclk>),         //       adc_external_interface.sclk
-		.adc_external_interface_cs_n         (<connected-to-adc_external_interface_cs_n>),         //                             .cs_n
-		.adc_external_interface_dout         (<connected-to-adc_external_interface_dout>),         //                             .dout
-		.adc_external_interface_din          (<connected-to-adc_external_interface_din>)           //                             .din
+		.switches_external_connection_export (<connected-to-switches_external_connection_export>)  // switches_external_connection.export
 	);
 

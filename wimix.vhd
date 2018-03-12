@@ -125,15 +125,15 @@
 		-- All other HPS pins
 			
 			HPS_KEY_N 				: inout std_logic := 'X';
-			HPS_LED 					: inout std_logic := 'X';
+			HPS_LED 				: inout std_logic := 'X';
 			HPS_LTC_GPIO 			: inout std_logic := 'X';
 			HPS_GSENSOR_INT 		: inout std_logic := 'X';
 
 			
 		-- FPGA side pins
 			
-			LEDR 						: out std_logic_vector(9 downto 0);
-			SW							: in  std_logic_vector(9 downto 0);
+			LEDR 					: out std_logic_vector(9 downto 0);
+			SW						: in  std_logic_vector(9 downto 0);
 			HEX0_N					: out std_logic_vector(6 downto 0);			
 			HEX1_N					: out std_logic_vector(6 downto 0);
 			HEX2_N					: out std_logic_vector(6 downto 0);
@@ -141,10 +141,15 @@
 			HEX4_N					: out std_logic_vector(6 downto 0);
 			HEX5_N					: out std_logic_vector(6 downto 0);
 			
+			GPIO_0_0 				: out std_logic;
+			GPIO_0_1				: out std_logic;
+			GPIO_0_2				: out std_logic;
+			GPIO_0_3				: out std_logic;
+
 			ADC_SCLK 				: out std_logic;
 			ADC_CS_N				: out std_logic;
 			ADC_DOUT				: in  std_logic;
-			ADC_DIN					: out std_logic
+			ADC_DIN					: out std_logic			
 	);
 end wimix;
 
@@ -152,6 +157,10 @@ end wimix;
 -- Use Clause(s) (optional)
 
 architecture rtl of wimix is
+	alias PWM1 is GPIo_0_0;
+	alias PWM2 is GPIo_0_1;
+	alias PWM3 is GPIo_0_2;
+	alias PWM4 is GPIo_0_3;
 
 	-- Declarations (optional)
 	 component soc_system is
@@ -231,6 +240,12 @@ architecture rtl of wimix is
 			hex3_export : out   std_logic_vector(6 downto 0);                        
 			hex4_export : out   std_logic_vector(6 downto 0);                        
 			hex5_export : out   std_logic_vector(6 downto 0);
+			
+			multi_pwm_export_pwm1               : out   std_logic;                                        -- export_pwm1
+            multi_pwm_export_pwm2               : out   std_logic;                                        -- export_pwm2
+            multi_pwm_export_pwm3               : out   std_logic;                                        -- export_pwm3
+            multi_pwm_export_pwm4               : out   std_logic;   
+			
             adc_external_interface_sclk         : out   std_logic;
             adc_external_interface_cs_n         : out   std_logic;
             adc_external_interface_dout         : in    std_logic:= 'X';
@@ -328,6 +343,10 @@ begin
 						hex3_export                         => HEX3_N,
 						hex4_export                         => HEX4_N,
 						hex5_export                         => HEX5_N,
+						multi_pwm_export_pwm1               => PWM1,
+						multi_pwm_export_pwm2               => PWM2,
+						multi_pwm_export_pwm3               => PWM3,
+						multi_pwm_export_pwm4               => PWM4,
 						adc_external_interface_sclk         => ADC_SCLK,
 						adc_external_interface_cs_n         => ADC_CS_N,
 						adc_external_interface_dout         => ADC_DOUT,

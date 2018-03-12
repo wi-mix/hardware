@@ -84,6 +84,10 @@ entity soc_system is
 		memory_mem_odt                      : out   std_logic;                                        --                             .mem_odt
 		memory_mem_dm                       : out   std_logic_vector(3 downto 0);                     --                             .mem_dm
 		memory_oct_rzqin                    : in    std_logic                     := '0';             --                             .oct_rzqin
+		multi_pwm_export_pwm1               : out   std_logic;                                        --                    multi_pwm.export_pwm1
+		multi_pwm_export_pwm2               : out   std_logic;                                        --                             .export_pwm2
+		multi_pwm_export_pwm3               : out   std_logic;                                        --                             .export_pwm3
+		multi_pwm_export_pwm4               : out   std_logic;                                        --                             .export_pwm4
 		red_leds_external_connection_export : out   std_logic_vector(9 downto 0);                     -- red_leds_external_connection.export
 		reset_reset_n                       : in    std_logic                     := '0';             --                        reset.reset_n
 		switches_external_connection_export : in    std_logic_vector(9 downto 0)  := (others => '0')  -- switches_external_connection.export
@@ -234,11 +238,26 @@ architecture rtl of soc_system is
 			h2f_lw_RRESP             : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- rresp
 			h2f_lw_RLAST             : in    std_logic                     := 'X';             -- rlast
 			h2f_lw_RVALID            : in    std_logic                     := 'X';             -- rvalid
-			h2f_lw_RREADY            : out   std_logic;                                        -- rready
-			f2h_irq_p0               : in    std_logic_vector(31 downto 0) := (others => 'X'); -- irq
-			f2h_irq_p1               : in    std_logic_vector(31 downto 0) := (others => 'X')  -- irq
+			h2f_lw_RREADY            : out   std_logic                                         -- rready
 		);
 	end component soc_system_hps;
+
+	component multi_pwm is
+		generic (
+			W : integer := 15
+		);
+		port (
+			clk       : in  std_logic                     := 'X';             -- clk
+			reset_n   : in  std_logic                     := 'X';             -- reset_n
+			writas    : in  std_logic                     := 'X';             -- write_n
+			address   : in  std_logic_vector(5 downto 0)  := (others => 'X'); -- address
+			writedata : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			PWM1      : out std_logic;                                        -- export_pwm1
+			PWM2      : out std_logic;                                        -- export_pwm2
+			PWM3      : out std_logic;                                        -- export_pwm3
+			PWM4      : out std_logic                                         -- export_pwm4
+		);
+	end component multi_pwm;
 
 	component soc_system_red_leds is
 		port (
@@ -331,6 +350,9 @@ architecture rtl of soc_system is
 			hex4_avalon_slave_writedata                                       : out std_logic_vector(31 downto 0);                    -- writedata
 			hex5_avalon_slave_write                                           : out std_logic;                                        -- write
 			hex5_avalon_slave_writedata                                       : out std_logic_vector(31 downto 0);                    -- writedata
+			multi_pwm_0_avalon_slave_0_address                                : out std_logic_vector(5 downto 0);                     -- address
+			multi_pwm_0_avalon_slave_0_write                                  : out std_logic;                                        -- write
+			multi_pwm_0_avalon_slave_0_writedata                              : out std_logic_vector(31 downto 0);                    -- writedata
 			red_leds_s1_address                                               : out std_logic_vector(1 downto 0);                     -- address
 			red_leds_s1_write                                                 : out std_logic;                                        -- write
 			red_leds_s1_readdata                                              : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -342,14 +364,6 @@ architecture rtl of soc_system is
 			sysid_qsys_0_control_slave_readdata                               : in  std_logic_vector(31 downto 0) := (others => 'X')  -- readdata
 		);
 	end component soc_system_mm_interconnect_0;
-
-	component soc_system_irq_mapper is
-		port (
-			clk        : in  std_logic                     := 'X'; -- clk
-			reset      : in  std_logic                     := 'X'; -- reset
-			sender_irq : out std_logic_vector(31 downto 0)         -- irq
-		);
-	end component soc_system_irq_mapper;
 
 	component soc_system_rst_controller is
 		generic (
@@ -483,84 +497,86 @@ architecture rtl of soc_system is
 		);
 	end component soc_system_rst_controller_001;
 
-	signal hps_h2f_lw_axi_master_awburst                         : std_logic_vector(1 downto 0);  -- hps:h2f_lw_AWBURST -> mm_interconnect_0:hps_h2f_lw_axi_master_awburst
-	signal hps_h2f_lw_axi_master_arlen                           : std_logic_vector(3 downto 0);  -- hps:h2f_lw_ARLEN -> mm_interconnect_0:hps_h2f_lw_axi_master_arlen
-	signal hps_h2f_lw_axi_master_wstrb                           : std_logic_vector(3 downto 0);  -- hps:h2f_lw_WSTRB -> mm_interconnect_0:hps_h2f_lw_axi_master_wstrb
-	signal hps_h2f_lw_axi_master_wready                          : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_wready -> hps:h2f_lw_WREADY
-	signal hps_h2f_lw_axi_master_rid                             : std_logic_vector(11 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_rid -> hps:h2f_lw_RID
-	signal hps_h2f_lw_axi_master_rready                          : std_logic;                     -- hps:h2f_lw_RREADY -> mm_interconnect_0:hps_h2f_lw_axi_master_rready
-	signal hps_h2f_lw_axi_master_awlen                           : std_logic_vector(3 downto 0);  -- hps:h2f_lw_AWLEN -> mm_interconnect_0:hps_h2f_lw_axi_master_awlen
-	signal hps_h2f_lw_axi_master_wid                             : std_logic_vector(11 downto 0); -- hps:h2f_lw_WID -> mm_interconnect_0:hps_h2f_lw_axi_master_wid
-	signal hps_h2f_lw_axi_master_arcache                         : std_logic_vector(3 downto 0);  -- hps:h2f_lw_ARCACHE -> mm_interconnect_0:hps_h2f_lw_axi_master_arcache
-	signal hps_h2f_lw_axi_master_wvalid                          : std_logic;                     -- hps:h2f_lw_WVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_wvalid
-	signal hps_h2f_lw_axi_master_araddr                          : std_logic_vector(20 downto 0); -- hps:h2f_lw_ARADDR -> mm_interconnect_0:hps_h2f_lw_axi_master_araddr
-	signal hps_h2f_lw_axi_master_arprot                          : std_logic_vector(2 downto 0);  -- hps:h2f_lw_ARPROT -> mm_interconnect_0:hps_h2f_lw_axi_master_arprot
-	signal hps_h2f_lw_axi_master_awprot                          : std_logic_vector(2 downto 0);  -- hps:h2f_lw_AWPROT -> mm_interconnect_0:hps_h2f_lw_axi_master_awprot
-	signal hps_h2f_lw_axi_master_wdata                           : std_logic_vector(31 downto 0); -- hps:h2f_lw_WDATA -> mm_interconnect_0:hps_h2f_lw_axi_master_wdata
-	signal hps_h2f_lw_axi_master_arvalid                         : std_logic;                     -- hps:h2f_lw_ARVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_arvalid
-	signal hps_h2f_lw_axi_master_awcache                         : std_logic_vector(3 downto 0);  -- hps:h2f_lw_AWCACHE -> mm_interconnect_0:hps_h2f_lw_axi_master_awcache
-	signal hps_h2f_lw_axi_master_arid                            : std_logic_vector(11 downto 0); -- hps:h2f_lw_ARID -> mm_interconnect_0:hps_h2f_lw_axi_master_arid
-	signal hps_h2f_lw_axi_master_arlock                          : std_logic_vector(1 downto 0);  -- hps:h2f_lw_ARLOCK -> mm_interconnect_0:hps_h2f_lw_axi_master_arlock
-	signal hps_h2f_lw_axi_master_awlock                          : std_logic_vector(1 downto 0);  -- hps:h2f_lw_AWLOCK -> mm_interconnect_0:hps_h2f_lw_axi_master_awlock
-	signal hps_h2f_lw_axi_master_awaddr                          : std_logic_vector(20 downto 0); -- hps:h2f_lw_AWADDR -> mm_interconnect_0:hps_h2f_lw_axi_master_awaddr
-	signal hps_h2f_lw_axi_master_bresp                           : std_logic_vector(1 downto 0);  -- mm_interconnect_0:hps_h2f_lw_axi_master_bresp -> hps:h2f_lw_BRESP
-	signal hps_h2f_lw_axi_master_arready                         : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_arready -> hps:h2f_lw_ARREADY
-	signal hps_h2f_lw_axi_master_rdata                           : std_logic_vector(31 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_rdata -> hps:h2f_lw_RDATA
-	signal hps_h2f_lw_axi_master_awready                         : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_awready -> hps:h2f_lw_AWREADY
-	signal hps_h2f_lw_axi_master_arburst                         : std_logic_vector(1 downto 0);  -- hps:h2f_lw_ARBURST -> mm_interconnect_0:hps_h2f_lw_axi_master_arburst
-	signal hps_h2f_lw_axi_master_arsize                          : std_logic_vector(2 downto 0);  -- hps:h2f_lw_ARSIZE -> mm_interconnect_0:hps_h2f_lw_axi_master_arsize
-	signal hps_h2f_lw_axi_master_bready                          : std_logic;                     -- hps:h2f_lw_BREADY -> mm_interconnect_0:hps_h2f_lw_axi_master_bready
-	signal hps_h2f_lw_axi_master_rlast                           : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_rlast -> hps:h2f_lw_RLAST
-	signal hps_h2f_lw_axi_master_wlast                           : std_logic;                     -- hps:h2f_lw_WLAST -> mm_interconnect_0:hps_h2f_lw_axi_master_wlast
-	signal hps_h2f_lw_axi_master_rresp                           : std_logic_vector(1 downto 0);  -- mm_interconnect_0:hps_h2f_lw_axi_master_rresp -> hps:h2f_lw_RRESP
-	signal hps_h2f_lw_axi_master_awid                            : std_logic_vector(11 downto 0); -- hps:h2f_lw_AWID -> mm_interconnect_0:hps_h2f_lw_axi_master_awid
-	signal hps_h2f_lw_axi_master_bid                             : std_logic_vector(11 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_bid -> hps:h2f_lw_BID
-	signal hps_h2f_lw_axi_master_bvalid                          : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_bvalid -> hps:h2f_lw_BVALID
-	signal hps_h2f_lw_axi_master_awsize                          : std_logic_vector(2 downto 0);  -- hps:h2f_lw_AWSIZE -> mm_interconnect_0:hps_h2f_lw_axi_master_awsize
-	signal hps_h2f_lw_axi_master_awvalid                         : std_logic;                     -- hps:h2f_lw_AWVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_awvalid
-	signal hps_h2f_lw_axi_master_rvalid                          : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_rvalid -> hps:h2f_lw_RVALID
-	signal mm_interconnect_0_adc_adc_slave_readdata              : std_logic_vector(31 downto 0); -- adc:readdata -> mm_interconnect_0:adc_adc_slave_readdata
-	signal mm_interconnect_0_adc_adc_slave_waitrequest           : std_logic;                     -- adc:waitrequest -> mm_interconnect_0:adc_adc_slave_waitrequest
-	signal mm_interconnect_0_adc_adc_slave_address               : std_logic_vector(2 downto 0);  -- mm_interconnect_0:adc_adc_slave_address -> adc:address
-	signal mm_interconnect_0_adc_adc_slave_read                  : std_logic;                     -- mm_interconnect_0:adc_adc_slave_read -> adc:read
-	signal mm_interconnect_0_adc_adc_slave_write                 : std_logic;                     -- mm_interconnect_0:adc_adc_slave_write -> adc:write
-	signal mm_interconnect_0_adc_adc_slave_writedata             : std_logic_vector(31 downto 0); -- mm_interconnect_0:adc_adc_slave_writedata -> adc:writedata
-	signal mm_interconnect_0_hex0_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex0_avalon_slave_write -> mm_interconnect_0_hex0_avalon_slave_write:in
-	signal mm_interconnect_0_hex0_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex0_avalon_slave_writedata -> hex0:avalon_slave_writedata
-	signal mm_interconnect_0_hex1_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex1_avalon_slave_write -> mm_interconnect_0_hex1_avalon_slave_write:in
-	signal mm_interconnect_0_hex1_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex1_avalon_slave_writedata -> hex1:avalon_slave_writedata
-	signal mm_interconnect_0_hex2_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex2_avalon_slave_write -> mm_interconnect_0_hex2_avalon_slave_write:in
-	signal mm_interconnect_0_hex2_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex2_avalon_slave_writedata -> hex2:avalon_slave_writedata
-	signal mm_interconnect_0_hex3_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex3_avalon_slave_write -> mm_interconnect_0_hex3_avalon_slave_write:in
-	signal mm_interconnect_0_hex3_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex3_avalon_slave_writedata -> hex3:avalon_slave_writedata
-	signal mm_interconnect_0_hex4_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex4_avalon_slave_write -> mm_interconnect_0_hex4_avalon_slave_write:in
-	signal mm_interconnect_0_hex4_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex4_avalon_slave_writedata -> hex4:avalon_slave_writedata
-	signal mm_interconnect_0_hex5_avalon_slave_write             : std_logic;                     -- mm_interconnect_0:hex5_avalon_slave_write -> mm_interconnect_0_hex5_avalon_slave_write:in
-	signal mm_interconnect_0_hex5_avalon_slave_writedata         : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex5_avalon_slave_writedata -> hex5:avalon_slave_writedata
-	signal mm_interconnect_0_sysid_qsys_0_control_slave_readdata : std_logic_vector(31 downto 0); -- sysid_qsys_0:readdata -> mm_interconnect_0:sysid_qsys_0_control_slave_readdata
-	signal mm_interconnect_0_sysid_qsys_0_control_slave_address  : std_logic_vector(0 downto 0);  -- mm_interconnect_0:sysid_qsys_0_control_slave_address -> sysid_qsys_0:address
-	signal mm_interconnect_0_red_leds_s1_chipselect              : std_logic;                     -- mm_interconnect_0:red_leds_s1_chipselect -> red_leds:chipselect
-	signal mm_interconnect_0_red_leds_s1_readdata                : std_logic_vector(31 downto 0); -- red_leds:readdata -> mm_interconnect_0:red_leds_s1_readdata
-	signal mm_interconnect_0_red_leds_s1_address                 : std_logic_vector(1 downto 0);  -- mm_interconnect_0:red_leds_s1_address -> red_leds:address
-	signal mm_interconnect_0_red_leds_s1_write                   : std_logic;                     -- mm_interconnect_0:red_leds_s1_write -> mm_interconnect_0_red_leds_s1_write:in
-	signal mm_interconnect_0_red_leds_s1_writedata               : std_logic_vector(31 downto 0); -- mm_interconnect_0:red_leds_s1_writedata -> red_leds:writedata
-	signal mm_interconnect_0_switches_s1_readdata                : std_logic_vector(31 downto 0); -- switches:readdata -> mm_interconnect_0:switches_s1_readdata
-	signal mm_interconnect_0_switches_s1_address                 : std_logic_vector(1 downto 0);  -- mm_interconnect_0:switches_s1_address -> switches:address
-	signal hps_f2h_irq0_irq                                      : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> hps:f2h_irq_p0
-	signal hps_f2h_irq1_irq                                      : std_logic_vector(31 downto 0); -- irq_mapper_001:sender_irq -> hps:f2h_irq_p1
-	signal rst_controller_reset_out_reset                        : std_logic;                     -- rst_controller:reset_out -> [adc:reset, mm_interconnect_0:adc_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
-	signal hps_h2f_reset_reset                                   : std_logic;                     -- hps:h2f_rst_n -> hps_h2f_reset_reset:in
-	signal rst_controller_001_reset_out_reset                    : std_logic;                     -- rst_controller_001:reset_out -> mm_interconnect_0:hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
-	signal reset_reset_n_ports_inv                               : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
-	signal mm_interconnect_0_hex0_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex0_avalon_slave_write:inv -> hex0:avalon_slave_write_n
-	signal mm_interconnect_0_hex1_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex1_avalon_slave_write:inv -> hex1:avalon_slave_write_n
-	signal mm_interconnect_0_hex2_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex2_avalon_slave_write:inv -> hex2:avalon_slave_write_n
-	signal mm_interconnect_0_hex3_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex3_avalon_slave_write:inv -> hex3:avalon_slave_write_n
-	signal mm_interconnect_0_hex4_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex4_avalon_slave_write:inv -> hex4:avalon_slave_write_n
-	signal mm_interconnect_0_hex5_avalon_slave_write_ports_inv   : std_logic;                     -- mm_interconnect_0_hex5_avalon_slave_write:inv -> hex5:avalon_slave_write_n
-	signal mm_interconnect_0_red_leds_s1_write_ports_inv         : std_logic;                     -- mm_interconnect_0_red_leds_s1_write:inv -> red_leds:write_n
-	signal rst_controller_reset_out_reset_ports_inv              : std_logic;                     -- rst_controller_reset_out_reset:inv -> [hex0:reset_n, hex1:reset_n, hex2:reset_n, hex3:reset_n, hex4:reset_n, hex5:reset_n, red_leds:reset_n, switches:reset_n, sysid_qsys_0:reset_n]
-	signal hps_h2f_reset_reset_ports_inv                         : std_logic;                     -- hps_h2f_reset_reset:inv -> [rst_controller:reset_in1, rst_controller_001:reset_in0]
+	signal hps_h2f_lw_axi_master_awburst                                : std_logic_vector(1 downto 0);  -- hps:h2f_lw_AWBURST -> mm_interconnect_0:hps_h2f_lw_axi_master_awburst
+	signal hps_h2f_lw_axi_master_arlen                                  : std_logic_vector(3 downto 0);  -- hps:h2f_lw_ARLEN -> mm_interconnect_0:hps_h2f_lw_axi_master_arlen
+	signal hps_h2f_lw_axi_master_wstrb                                  : std_logic_vector(3 downto 0);  -- hps:h2f_lw_WSTRB -> mm_interconnect_0:hps_h2f_lw_axi_master_wstrb
+	signal hps_h2f_lw_axi_master_wready                                 : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_wready -> hps:h2f_lw_WREADY
+	signal hps_h2f_lw_axi_master_rid                                    : std_logic_vector(11 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_rid -> hps:h2f_lw_RID
+	signal hps_h2f_lw_axi_master_rready                                 : std_logic;                     -- hps:h2f_lw_RREADY -> mm_interconnect_0:hps_h2f_lw_axi_master_rready
+	signal hps_h2f_lw_axi_master_awlen                                  : std_logic_vector(3 downto 0);  -- hps:h2f_lw_AWLEN -> mm_interconnect_0:hps_h2f_lw_axi_master_awlen
+	signal hps_h2f_lw_axi_master_wid                                    : std_logic_vector(11 downto 0); -- hps:h2f_lw_WID -> mm_interconnect_0:hps_h2f_lw_axi_master_wid
+	signal hps_h2f_lw_axi_master_arcache                                : std_logic_vector(3 downto 0);  -- hps:h2f_lw_ARCACHE -> mm_interconnect_0:hps_h2f_lw_axi_master_arcache
+	signal hps_h2f_lw_axi_master_wvalid                                 : std_logic;                     -- hps:h2f_lw_WVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_wvalid
+	signal hps_h2f_lw_axi_master_araddr                                 : std_logic_vector(20 downto 0); -- hps:h2f_lw_ARADDR -> mm_interconnect_0:hps_h2f_lw_axi_master_araddr
+	signal hps_h2f_lw_axi_master_arprot                                 : std_logic_vector(2 downto 0);  -- hps:h2f_lw_ARPROT -> mm_interconnect_0:hps_h2f_lw_axi_master_arprot
+	signal hps_h2f_lw_axi_master_awprot                                 : std_logic_vector(2 downto 0);  -- hps:h2f_lw_AWPROT -> mm_interconnect_0:hps_h2f_lw_axi_master_awprot
+	signal hps_h2f_lw_axi_master_wdata                                  : std_logic_vector(31 downto 0); -- hps:h2f_lw_WDATA -> mm_interconnect_0:hps_h2f_lw_axi_master_wdata
+	signal hps_h2f_lw_axi_master_arvalid                                : std_logic;                     -- hps:h2f_lw_ARVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_arvalid
+	signal hps_h2f_lw_axi_master_awcache                                : std_logic_vector(3 downto 0);  -- hps:h2f_lw_AWCACHE -> mm_interconnect_0:hps_h2f_lw_axi_master_awcache
+	signal hps_h2f_lw_axi_master_arid                                   : std_logic_vector(11 downto 0); -- hps:h2f_lw_ARID -> mm_interconnect_0:hps_h2f_lw_axi_master_arid
+	signal hps_h2f_lw_axi_master_arlock                                 : std_logic_vector(1 downto 0);  -- hps:h2f_lw_ARLOCK -> mm_interconnect_0:hps_h2f_lw_axi_master_arlock
+	signal hps_h2f_lw_axi_master_awlock                                 : std_logic_vector(1 downto 0);  -- hps:h2f_lw_AWLOCK -> mm_interconnect_0:hps_h2f_lw_axi_master_awlock
+	signal hps_h2f_lw_axi_master_awaddr                                 : std_logic_vector(20 downto 0); -- hps:h2f_lw_AWADDR -> mm_interconnect_0:hps_h2f_lw_axi_master_awaddr
+	signal hps_h2f_lw_axi_master_bresp                                  : std_logic_vector(1 downto 0);  -- mm_interconnect_0:hps_h2f_lw_axi_master_bresp -> hps:h2f_lw_BRESP
+	signal hps_h2f_lw_axi_master_arready                                : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_arready -> hps:h2f_lw_ARREADY
+	signal hps_h2f_lw_axi_master_rdata                                  : std_logic_vector(31 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_rdata -> hps:h2f_lw_RDATA
+	signal hps_h2f_lw_axi_master_awready                                : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_awready -> hps:h2f_lw_AWREADY
+	signal hps_h2f_lw_axi_master_arburst                                : std_logic_vector(1 downto 0);  -- hps:h2f_lw_ARBURST -> mm_interconnect_0:hps_h2f_lw_axi_master_arburst
+	signal hps_h2f_lw_axi_master_arsize                                 : std_logic_vector(2 downto 0);  -- hps:h2f_lw_ARSIZE -> mm_interconnect_0:hps_h2f_lw_axi_master_arsize
+	signal hps_h2f_lw_axi_master_bready                                 : std_logic;                     -- hps:h2f_lw_BREADY -> mm_interconnect_0:hps_h2f_lw_axi_master_bready
+	signal hps_h2f_lw_axi_master_rlast                                  : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_rlast -> hps:h2f_lw_RLAST
+	signal hps_h2f_lw_axi_master_wlast                                  : std_logic;                     -- hps:h2f_lw_WLAST -> mm_interconnect_0:hps_h2f_lw_axi_master_wlast
+	signal hps_h2f_lw_axi_master_rresp                                  : std_logic_vector(1 downto 0);  -- mm_interconnect_0:hps_h2f_lw_axi_master_rresp -> hps:h2f_lw_RRESP
+	signal hps_h2f_lw_axi_master_awid                                   : std_logic_vector(11 downto 0); -- hps:h2f_lw_AWID -> mm_interconnect_0:hps_h2f_lw_axi_master_awid
+	signal hps_h2f_lw_axi_master_bid                                    : std_logic_vector(11 downto 0); -- mm_interconnect_0:hps_h2f_lw_axi_master_bid -> hps:h2f_lw_BID
+	signal hps_h2f_lw_axi_master_bvalid                                 : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_bvalid -> hps:h2f_lw_BVALID
+	signal hps_h2f_lw_axi_master_awsize                                 : std_logic_vector(2 downto 0);  -- hps:h2f_lw_AWSIZE -> mm_interconnect_0:hps_h2f_lw_axi_master_awsize
+	signal hps_h2f_lw_axi_master_awvalid                                : std_logic;                     -- hps:h2f_lw_AWVALID -> mm_interconnect_0:hps_h2f_lw_axi_master_awvalid
+	signal hps_h2f_lw_axi_master_rvalid                                 : std_logic;                     -- mm_interconnect_0:hps_h2f_lw_axi_master_rvalid -> hps:h2f_lw_RVALID
+	signal mm_interconnect_0_adc_adc_slave_readdata                     : std_logic_vector(31 downto 0); -- adc:readdata -> mm_interconnect_0:adc_adc_slave_readdata
+	signal mm_interconnect_0_adc_adc_slave_waitrequest                  : std_logic;                     -- adc:waitrequest -> mm_interconnect_0:adc_adc_slave_waitrequest
+	signal mm_interconnect_0_adc_adc_slave_address                      : std_logic_vector(2 downto 0);  -- mm_interconnect_0:adc_adc_slave_address -> adc:address
+	signal mm_interconnect_0_adc_adc_slave_read                         : std_logic;                     -- mm_interconnect_0:adc_adc_slave_read -> adc:read
+	signal mm_interconnect_0_adc_adc_slave_write                        : std_logic;                     -- mm_interconnect_0:adc_adc_slave_write -> adc:write
+	signal mm_interconnect_0_adc_adc_slave_writedata                    : std_logic_vector(31 downto 0); -- mm_interconnect_0:adc_adc_slave_writedata -> adc:writedata
+	signal mm_interconnect_0_hex0_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex0_avalon_slave_write -> mm_interconnect_0_hex0_avalon_slave_write:in
+	signal mm_interconnect_0_hex0_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex0_avalon_slave_writedata -> hex0:avalon_slave_writedata
+	signal mm_interconnect_0_hex1_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex1_avalon_slave_write -> mm_interconnect_0_hex1_avalon_slave_write:in
+	signal mm_interconnect_0_hex1_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex1_avalon_slave_writedata -> hex1:avalon_slave_writedata
+	signal mm_interconnect_0_hex2_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex2_avalon_slave_write -> mm_interconnect_0_hex2_avalon_slave_write:in
+	signal mm_interconnect_0_hex2_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex2_avalon_slave_writedata -> hex2:avalon_slave_writedata
+	signal mm_interconnect_0_hex3_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex3_avalon_slave_write -> mm_interconnect_0_hex3_avalon_slave_write:in
+	signal mm_interconnect_0_hex3_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex3_avalon_slave_writedata -> hex3:avalon_slave_writedata
+	signal mm_interconnect_0_hex4_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex4_avalon_slave_write -> mm_interconnect_0_hex4_avalon_slave_write:in
+	signal mm_interconnect_0_hex4_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex4_avalon_slave_writedata -> hex4:avalon_slave_writedata
+	signal mm_interconnect_0_hex5_avalon_slave_write                    : std_logic;                     -- mm_interconnect_0:hex5_avalon_slave_write -> mm_interconnect_0_hex5_avalon_slave_write:in
+	signal mm_interconnect_0_hex5_avalon_slave_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:hex5_avalon_slave_writedata -> hex5:avalon_slave_writedata
+	signal mm_interconnect_0_multi_pwm_0_avalon_slave_0_address         : std_logic_vector(5 downto 0);  -- mm_interconnect_0:multi_pwm_0_avalon_slave_0_address -> multi_pwm_0:address
+	signal mm_interconnect_0_multi_pwm_0_avalon_slave_0_write           : std_logic;                     -- mm_interconnect_0:multi_pwm_0_avalon_slave_0_write -> mm_interconnect_0_multi_pwm_0_avalon_slave_0_write:in
+	signal mm_interconnect_0_multi_pwm_0_avalon_slave_0_writedata       : std_logic_vector(31 downto 0); -- mm_interconnect_0:multi_pwm_0_avalon_slave_0_writedata -> multi_pwm_0:writedata
+	signal mm_interconnect_0_sysid_qsys_0_control_slave_readdata        : std_logic_vector(31 downto 0); -- sysid_qsys_0:readdata -> mm_interconnect_0:sysid_qsys_0_control_slave_readdata
+	signal mm_interconnect_0_sysid_qsys_0_control_slave_address         : std_logic_vector(0 downto 0);  -- mm_interconnect_0:sysid_qsys_0_control_slave_address -> sysid_qsys_0:address
+	signal mm_interconnect_0_red_leds_s1_chipselect                     : std_logic;                     -- mm_interconnect_0:red_leds_s1_chipselect -> red_leds:chipselect
+	signal mm_interconnect_0_red_leds_s1_readdata                       : std_logic_vector(31 downto 0); -- red_leds:readdata -> mm_interconnect_0:red_leds_s1_readdata
+	signal mm_interconnect_0_red_leds_s1_address                        : std_logic_vector(1 downto 0);  -- mm_interconnect_0:red_leds_s1_address -> red_leds:address
+	signal mm_interconnect_0_red_leds_s1_write                          : std_logic;                     -- mm_interconnect_0:red_leds_s1_write -> mm_interconnect_0_red_leds_s1_write:in
+	signal mm_interconnect_0_red_leds_s1_writedata                      : std_logic_vector(31 downto 0); -- mm_interconnect_0:red_leds_s1_writedata -> red_leds:writedata
+	signal mm_interconnect_0_switches_s1_readdata                       : std_logic_vector(31 downto 0); -- switches:readdata -> mm_interconnect_0:switches_s1_readdata
+	signal mm_interconnect_0_switches_s1_address                        : std_logic_vector(1 downto 0);  -- mm_interconnect_0:switches_s1_address -> switches:address
+	signal rst_controller_reset_out_reset                               : std_logic;                     -- rst_controller:reset_out -> [adc:reset, mm_interconnect_0:adc_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
+	signal hps_h2f_reset_reset                                          : std_logic;                     -- hps:h2f_rst_n -> hps_h2f_reset_reset:in
+	signal rst_controller_001_reset_out_reset                           : std_logic;                     -- rst_controller_001:reset_out -> mm_interconnect_0:hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
+	signal reset_reset_n_ports_inv                                      : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
+	signal mm_interconnect_0_hex0_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex0_avalon_slave_write:inv -> hex0:avalon_slave_write_n
+	signal mm_interconnect_0_hex1_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex1_avalon_slave_write:inv -> hex1:avalon_slave_write_n
+	signal mm_interconnect_0_hex2_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex2_avalon_slave_write:inv -> hex2:avalon_slave_write_n
+	signal mm_interconnect_0_hex3_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex3_avalon_slave_write:inv -> hex3:avalon_slave_write_n
+	signal mm_interconnect_0_hex4_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex4_avalon_slave_write:inv -> hex4:avalon_slave_write_n
+	signal mm_interconnect_0_hex5_avalon_slave_write_ports_inv          : std_logic;                     -- mm_interconnect_0_hex5_avalon_slave_write:inv -> hex5:avalon_slave_write_n
+	signal mm_interconnect_0_multi_pwm_0_avalon_slave_0_write_ports_inv : std_logic;                     -- mm_interconnect_0_multi_pwm_0_avalon_slave_0_write:inv -> multi_pwm_0:writas
+	signal mm_interconnect_0_red_leds_s1_write_ports_inv                : std_logic;                     -- mm_interconnect_0_red_leds_s1_write:inv -> red_leds:write_n
+	signal rst_controller_reset_out_reset_ports_inv                     : std_logic;                     -- rst_controller_reset_out_reset:inv -> [hex0:reset_n, hex1:reset_n, hex2:reset_n, hex3:reset_n, hex4:reset_n, hex5:reset_n, multi_pwm_0:reset_n, red_leds:reset_n, switches:reset_n, sysid_qsys_0:reset_n]
+	signal hps_h2f_reset_reset_ports_inv                                : std_logic;                     -- hps_h2f_reset_reset:inv -> [rst_controller:reset_in1, rst_controller_001:reset_in0]
 
 begin
 
@@ -750,9 +766,23 @@ begin
 			h2f_lw_RRESP             => hps_h2f_lw_axi_master_rresp,     --                  .rresp
 			h2f_lw_RLAST             => hps_h2f_lw_axi_master_rlast,     --                  .rlast
 			h2f_lw_RVALID            => hps_h2f_lw_axi_master_rvalid,    --                  .rvalid
-			h2f_lw_RREADY            => hps_h2f_lw_axi_master_rready,    --                  .rready
-			f2h_irq_p0               => hps_f2h_irq0_irq,                --          f2h_irq0.irq
-			f2h_irq_p1               => hps_f2h_irq1_irq                 --          f2h_irq1.irq
+			h2f_lw_RREADY            => hps_h2f_lw_axi_master_rready     --                  .rready
+		);
+
+	multi_pwm_0 : component multi_pwm
+		generic map (
+			W => 31
+		)
+		port map (
+			clk       => clk_clk,                                                      --          clock.clk
+			reset_n   => rst_controller_reset_out_reset_ports_inv,                     --          reset.reset_n
+			writas    => mm_interconnect_0_multi_pwm_0_avalon_slave_0_write_ports_inv, -- avalon_slave_0.write_n
+			address   => mm_interconnect_0_multi_pwm_0_avalon_slave_0_address,         --               .address
+			writedata => mm_interconnect_0_multi_pwm_0_avalon_slave_0_writedata,       --               .writedata
+			PWM1      => multi_pwm_export_pwm1,                                        --    conduit_end.export_pwm1
+			PWM2      => multi_pwm_export_pwm2,                                        --               .export_pwm2
+			PWM3      => multi_pwm_export_pwm3,                                        --               .export_pwm3
+			PWM4      => multi_pwm_export_pwm4                                         --               .export_pwm4
 		);
 
 	red_leds : component soc_system_red_leds
@@ -786,86 +816,75 @@ begin
 
 	mm_interconnect_0 : component soc_system_mm_interconnect_0
 		port map (
-			hps_h2f_lw_axi_master_awid                                        => hps_h2f_lw_axi_master_awid,                            --                                       hps_h2f_lw_axi_master.awid
-			hps_h2f_lw_axi_master_awaddr                                      => hps_h2f_lw_axi_master_awaddr,                          --                                                            .awaddr
-			hps_h2f_lw_axi_master_awlen                                       => hps_h2f_lw_axi_master_awlen,                           --                                                            .awlen
-			hps_h2f_lw_axi_master_awsize                                      => hps_h2f_lw_axi_master_awsize,                          --                                                            .awsize
-			hps_h2f_lw_axi_master_awburst                                     => hps_h2f_lw_axi_master_awburst,                         --                                                            .awburst
-			hps_h2f_lw_axi_master_awlock                                      => hps_h2f_lw_axi_master_awlock,                          --                                                            .awlock
-			hps_h2f_lw_axi_master_awcache                                     => hps_h2f_lw_axi_master_awcache,                         --                                                            .awcache
-			hps_h2f_lw_axi_master_awprot                                      => hps_h2f_lw_axi_master_awprot,                          --                                                            .awprot
-			hps_h2f_lw_axi_master_awvalid                                     => hps_h2f_lw_axi_master_awvalid,                         --                                                            .awvalid
-			hps_h2f_lw_axi_master_awready                                     => hps_h2f_lw_axi_master_awready,                         --                                                            .awready
-			hps_h2f_lw_axi_master_wid                                         => hps_h2f_lw_axi_master_wid,                             --                                                            .wid
-			hps_h2f_lw_axi_master_wdata                                       => hps_h2f_lw_axi_master_wdata,                           --                                                            .wdata
-			hps_h2f_lw_axi_master_wstrb                                       => hps_h2f_lw_axi_master_wstrb,                           --                                                            .wstrb
-			hps_h2f_lw_axi_master_wlast                                       => hps_h2f_lw_axi_master_wlast,                           --                                                            .wlast
-			hps_h2f_lw_axi_master_wvalid                                      => hps_h2f_lw_axi_master_wvalid,                          --                                                            .wvalid
-			hps_h2f_lw_axi_master_wready                                      => hps_h2f_lw_axi_master_wready,                          --                                                            .wready
-			hps_h2f_lw_axi_master_bid                                         => hps_h2f_lw_axi_master_bid,                             --                                                            .bid
-			hps_h2f_lw_axi_master_bresp                                       => hps_h2f_lw_axi_master_bresp,                           --                                                            .bresp
-			hps_h2f_lw_axi_master_bvalid                                      => hps_h2f_lw_axi_master_bvalid,                          --                                                            .bvalid
-			hps_h2f_lw_axi_master_bready                                      => hps_h2f_lw_axi_master_bready,                          --                                                            .bready
-			hps_h2f_lw_axi_master_arid                                        => hps_h2f_lw_axi_master_arid,                            --                                                            .arid
-			hps_h2f_lw_axi_master_araddr                                      => hps_h2f_lw_axi_master_araddr,                          --                                                            .araddr
-			hps_h2f_lw_axi_master_arlen                                       => hps_h2f_lw_axi_master_arlen,                           --                                                            .arlen
-			hps_h2f_lw_axi_master_arsize                                      => hps_h2f_lw_axi_master_arsize,                          --                                                            .arsize
-			hps_h2f_lw_axi_master_arburst                                     => hps_h2f_lw_axi_master_arburst,                         --                                                            .arburst
-			hps_h2f_lw_axi_master_arlock                                      => hps_h2f_lw_axi_master_arlock,                          --                                                            .arlock
-			hps_h2f_lw_axi_master_arcache                                     => hps_h2f_lw_axi_master_arcache,                         --                                                            .arcache
-			hps_h2f_lw_axi_master_arprot                                      => hps_h2f_lw_axi_master_arprot,                          --                                                            .arprot
-			hps_h2f_lw_axi_master_arvalid                                     => hps_h2f_lw_axi_master_arvalid,                         --                                                            .arvalid
-			hps_h2f_lw_axi_master_arready                                     => hps_h2f_lw_axi_master_arready,                         --                                                            .arready
-			hps_h2f_lw_axi_master_rid                                         => hps_h2f_lw_axi_master_rid,                             --                                                            .rid
-			hps_h2f_lw_axi_master_rdata                                       => hps_h2f_lw_axi_master_rdata,                           --                                                            .rdata
-			hps_h2f_lw_axi_master_rresp                                       => hps_h2f_lw_axi_master_rresp,                           --                                                            .rresp
-			hps_h2f_lw_axi_master_rlast                                       => hps_h2f_lw_axi_master_rlast,                           --                                                            .rlast
-			hps_h2f_lw_axi_master_rvalid                                      => hps_h2f_lw_axi_master_rvalid,                          --                                                            .rvalid
-			hps_h2f_lw_axi_master_rready                                      => hps_h2f_lw_axi_master_rready,                          --                                                            .rready
-			clk_0_clk_clk                                                     => clk_clk,                                               --                                                   clk_0_clk.clk
-			adc_reset_reset_bridge_in_reset_reset                             => rst_controller_reset_out_reset,                        --                             adc_reset_reset_bridge_in_reset.reset
-			hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset => rst_controller_001_reset_out_reset,                    -- hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset.reset
-			adc_adc_slave_address                                             => mm_interconnect_0_adc_adc_slave_address,               --                                               adc_adc_slave.address
-			adc_adc_slave_write                                               => mm_interconnect_0_adc_adc_slave_write,                 --                                                            .write
-			adc_adc_slave_read                                                => mm_interconnect_0_adc_adc_slave_read,                  --                                                            .read
-			adc_adc_slave_readdata                                            => mm_interconnect_0_adc_adc_slave_readdata,              --                                                            .readdata
-			adc_adc_slave_writedata                                           => mm_interconnect_0_adc_adc_slave_writedata,             --                                                            .writedata
-			adc_adc_slave_waitrequest                                         => mm_interconnect_0_adc_adc_slave_waitrequest,           --                                                            .waitrequest
-			hex0_avalon_slave_write                                           => mm_interconnect_0_hex0_avalon_slave_write,             --                                           hex0_avalon_slave.write
-			hex0_avalon_slave_writedata                                       => mm_interconnect_0_hex0_avalon_slave_writedata,         --                                                            .writedata
-			hex1_avalon_slave_write                                           => mm_interconnect_0_hex1_avalon_slave_write,             --                                           hex1_avalon_slave.write
-			hex1_avalon_slave_writedata                                       => mm_interconnect_0_hex1_avalon_slave_writedata,         --                                                            .writedata
-			hex2_avalon_slave_write                                           => mm_interconnect_0_hex2_avalon_slave_write,             --                                           hex2_avalon_slave.write
-			hex2_avalon_slave_writedata                                       => mm_interconnect_0_hex2_avalon_slave_writedata,         --                                                            .writedata
-			hex3_avalon_slave_write                                           => mm_interconnect_0_hex3_avalon_slave_write,             --                                           hex3_avalon_slave.write
-			hex3_avalon_slave_writedata                                       => mm_interconnect_0_hex3_avalon_slave_writedata,         --                                                            .writedata
-			hex4_avalon_slave_write                                           => mm_interconnect_0_hex4_avalon_slave_write,             --                                           hex4_avalon_slave.write
-			hex4_avalon_slave_writedata                                       => mm_interconnect_0_hex4_avalon_slave_writedata,         --                                                            .writedata
-			hex5_avalon_slave_write                                           => mm_interconnect_0_hex5_avalon_slave_write,             --                                           hex5_avalon_slave.write
-			hex5_avalon_slave_writedata                                       => mm_interconnect_0_hex5_avalon_slave_writedata,         --                                                            .writedata
-			red_leds_s1_address                                               => mm_interconnect_0_red_leds_s1_address,                 --                                                 red_leds_s1.address
-			red_leds_s1_write                                                 => mm_interconnect_0_red_leds_s1_write,                   --                                                            .write
-			red_leds_s1_readdata                                              => mm_interconnect_0_red_leds_s1_readdata,                --                                                            .readdata
-			red_leds_s1_writedata                                             => mm_interconnect_0_red_leds_s1_writedata,               --                                                            .writedata
-			red_leds_s1_chipselect                                            => mm_interconnect_0_red_leds_s1_chipselect,              --                                                            .chipselect
-			switches_s1_address                                               => mm_interconnect_0_switches_s1_address,                 --                                                 switches_s1.address
-			switches_s1_readdata                                              => mm_interconnect_0_switches_s1_readdata,                --                                                            .readdata
-			sysid_qsys_0_control_slave_address                                => mm_interconnect_0_sysid_qsys_0_control_slave_address,  --                                  sysid_qsys_0_control_slave.address
-			sysid_qsys_0_control_slave_readdata                               => mm_interconnect_0_sysid_qsys_0_control_slave_readdata  --                                                            .readdata
-		);
-
-	irq_mapper : component soc_system_irq_mapper
-		port map (
-			clk        => open,             --       clk.clk
-			reset      => open,             -- clk_reset.reset
-			sender_irq => hps_f2h_irq0_irq  --    sender.irq
-		);
-
-	irq_mapper_001 : component soc_system_irq_mapper
-		port map (
-			clk        => open,             --       clk.clk
-			reset      => open,             -- clk_reset.reset
-			sender_irq => hps_f2h_irq1_irq  --    sender.irq
+			hps_h2f_lw_axi_master_awid                                        => hps_h2f_lw_axi_master_awid,                             --                                       hps_h2f_lw_axi_master.awid
+			hps_h2f_lw_axi_master_awaddr                                      => hps_h2f_lw_axi_master_awaddr,                           --                                                            .awaddr
+			hps_h2f_lw_axi_master_awlen                                       => hps_h2f_lw_axi_master_awlen,                            --                                                            .awlen
+			hps_h2f_lw_axi_master_awsize                                      => hps_h2f_lw_axi_master_awsize,                           --                                                            .awsize
+			hps_h2f_lw_axi_master_awburst                                     => hps_h2f_lw_axi_master_awburst,                          --                                                            .awburst
+			hps_h2f_lw_axi_master_awlock                                      => hps_h2f_lw_axi_master_awlock,                           --                                                            .awlock
+			hps_h2f_lw_axi_master_awcache                                     => hps_h2f_lw_axi_master_awcache,                          --                                                            .awcache
+			hps_h2f_lw_axi_master_awprot                                      => hps_h2f_lw_axi_master_awprot,                           --                                                            .awprot
+			hps_h2f_lw_axi_master_awvalid                                     => hps_h2f_lw_axi_master_awvalid,                          --                                                            .awvalid
+			hps_h2f_lw_axi_master_awready                                     => hps_h2f_lw_axi_master_awready,                          --                                                            .awready
+			hps_h2f_lw_axi_master_wid                                         => hps_h2f_lw_axi_master_wid,                              --                                                            .wid
+			hps_h2f_lw_axi_master_wdata                                       => hps_h2f_lw_axi_master_wdata,                            --                                                            .wdata
+			hps_h2f_lw_axi_master_wstrb                                       => hps_h2f_lw_axi_master_wstrb,                            --                                                            .wstrb
+			hps_h2f_lw_axi_master_wlast                                       => hps_h2f_lw_axi_master_wlast,                            --                                                            .wlast
+			hps_h2f_lw_axi_master_wvalid                                      => hps_h2f_lw_axi_master_wvalid,                           --                                                            .wvalid
+			hps_h2f_lw_axi_master_wready                                      => hps_h2f_lw_axi_master_wready,                           --                                                            .wready
+			hps_h2f_lw_axi_master_bid                                         => hps_h2f_lw_axi_master_bid,                              --                                                            .bid
+			hps_h2f_lw_axi_master_bresp                                       => hps_h2f_lw_axi_master_bresp,                            --                                                            .bresp
+			hps_h2f_lw_axi_master_bvalid                                      => hps_h2f_lw_axi_master_bvalid,                           --                                                            .bvalid
+			hps_h2f_lw_axi_master_bready                                      => hps_h2f_lw_axi_master_bready,                           --                                                            .bready
+			hps_h2f_lw_axi_master_arid                                        => hps_h2f_lw_axi_master_arid,                             --                                                            .arid
+			hps_h2f_lw_axi_master_araddr                                      => hps_h2f_lw_axi_master_araddr,                           --                                                            .araddr
+			hps_h2f_lw_axi_master_arlen                                       => hps_h2f_lw_axi_master_arlen,                            --                                                            .arlen
+			hps_h2f_lw_axi_master_arsize                                      => hps_h2f_lw_axi_master_arsize,                           --                                                            .arsize
+			hps_h2f_lw_axi_master_arburst                                     => hps_h2f_lw_axi_master_arburst,                          --                                                            .arburst
+			hps_h2f_lw_axi_master_arlock                                      => hps_h2f_lw_axi_master_arlock,                           --                                                            .arlock
+			hps_h2f_lw_axi_master_arcache                                     => hps_h2f_lw_axi_master_arcache,                          --                                                            .arcache
+			hps_h2f_lw_axi_master_arprot                                      => hps_h2f_lw_axi_master_arprot,                           --                                                            .arprot
+			hps_h2f_lw_axi_master_arvalid                                     => hps_h2f_lw_axi_master_arvalid,                          --                                                            .arvalid
+			hps_h2f_lw_axi_master_arready                                     => hps_h2f_lw_axi_master_arready,                          --                                                            .arready
+			hps_h2f_lw_axi_master_rid                                         => hps_h2f_lw_axi_master_rid,                              --                                                            .rid
+			hps_h2f_lw_axi_master_rdata                                       => hps_h2f_lw_axi_master_rdata,                            --                                                            .rdata
+			hps_h2f_lw_axi_master_rresp                                       => hps_h2f_lw_axi_master_rresp,                            --                                                            .rresp
+			hps_h2f_lw_axi_master_rlast                                       => hps_h2f_lw_axi_master_rlast,                            --                                                            .rlast
+			hps_h2f_lw_axi_master_rvalid                                      => hps_h2f_lw_axi_master_rvalid,                           --                                                            .rvalid
+			hps_h2f_lw_axi_master_rready                                      => hps_h2f_lw_axi_master_rready,                           --                                                            .rready
+			clk_0_clk_clk                                                     => clk_clk,                                                --                                                   clk_0_clk.clk
+			adc_reset_reset_bridge_in_reset_reset                             => rst_controller_reset_out_reset,                         --                             adc_reset_reset_bridge_in_reset.reset
+			hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset => rst_controller_001_reset_out_reset,                     -- hps_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset.reset
+			adc_adc_slave_address                                             => mm_interconnect_0_adc_adc_slave_address,                --                                               adc_adc_slave.address
+			adc_adc_slave_write                                               => mm_interconnect_0_adc_adc_slave_write,                  --                                                            .write
+			adc_adc_slave_read                                                => mm_interconnect_0_adc_adc_slave_read,                   --                                                            .read
+			adc_adc_slave_readdata                                            => mm_interconnect_0_adc_adc_slave_readdata,               --                                                            .readdata
+			adc_adc_slave_writedata                                           => mm_interconnect_0_adc_adc_slave_writedata,              --                                                            .writedata
+			adc_adc_slave_waitrequest                                         => mm_interconnect_0_adc_adc_slave_waitrequest,            --                                                            .waitrequest
+			hex0_avalon_slave_write                                           => mm_interconnect_0_hex0_avalon_slave_write,              --                                           hex0_avalon_slave.write
+			hex0_avalon_slave_writedata                                       => mm_interconnect_0_hex0_avalon_slave_writedata,          --                                                            .writedata
+			hex1_avalon_slave_write                                           => mm_interconnect_0_hex1_avalon_slave_write,              --                                           hex1_avalon_slave.write
+			hex1_avalon_slave_writedata                                       => mm_interconnect_0_hex1_avalon_slave_writedata,          --                                                            .writedata
+			hex2_avalon_slave_write                                           => mm_interconnect_0_hex2_avalon_slave_write,              --                                           hex2_avalon_slave.write
+			hex2_avalon_slave_writedata                                       => mm_interconnect_0_hex2_avalon_slave_writedata,          --                                                            .writedata
+			hex3_avalon_slave_write                                           => mm_interconnect_0_hex3_avalon_slave_write,              --                                           hex3_avalon_slave.write
+			hex3_avalon_slave_writedata                                       => mm_interconnect_0_hex3_avalon_slave_writedata,          --                                                            .writedata
+			hex4_avalon_slave_write                                           => mm_interconnect_0_hex4_avalon_slave_write,              --                                           hex4_avalon_slave.write
+			hex4_avalon_slave_writedata                                       => mm_interconnect_0_hex4_avalon_slave_writedata,          --                                                            .writedata
+			hex5_avalon_slave_write                                           => mm_interconnect_0_hex5_avalon_slave_write,              --                                           hex5_avalon_slave.write
+			hex5_avalon_slave_writedata                                       => mm_interconnect_0_hex5_avalon_slave_writedata,          --                                                            .writedata
+			multi_pwm_0_avalon_slave_0_address                                => mm_interconnect_0_multi_pwm_0_avalon_slave_0_address,   --                                  multi_pwm_0_avalon_slave_0.address
+			multi_pwm_0_avalon_slave_0_write                                  => mm_interconnect_0_multi_pwm_0_avalon_slave_0_write,     --                                                            .write
+			multi_pwm_0_avalon_slave_0_writedata                              => mm_interconnect_0_multi_pwm_0_avalon_slave_0_writedata, --                                                            .writedata
+			red_leds_s1_address                                               => mm_interconnect_0_red_leds_s1_address,                  --                                                 red_leds_s1.address
+			red_leds_s1_write                                                 => mm_interconnect_0_red_leds_s1_write,                    --                                                            .write
+			red_leds_s1_readdata                                              => mm_interconnect_0_red_leds_s1_readdata,                 --                                                            .readdata
+			red_leds_s1_writedata                                             => mm_interconnect_0_red_leds_s1_writedata,                --                                                            .writedata
+			red_leds_s1_chipselect                                            => mm_interconnect_0_red_leds_s1_chipselect,               --                                                            .chipselect
+			switches_s1_address                                               => mm_interconnect_0_switches_s1_address,                  --                                                 switches_s1.address
+			switches_s1_readdata                                              => mm_interconnect_0_switches_s1_readdata,                 --                                                            .readdata
+			sysid_qsys_0_control_slave_address                                => mm_interconnect_0_sysid_qsys_0_control_slave_address,   --                                  sysid_qsys_0_control_slave.address
+			sysid_qsys_0_control_slave_readdata                               => mm_interconnect_0_sysid_qsys_0_control_slave_readdata   --                                                            .readdata
 		);
 
 	rst_controller : component soc_system_rst_controller
@@ -1011,6 +1030,8 @@ begin
 	mm_interconnect_0_hex4_avalon_slave_write_ports_inv <= not mm_interconnect_0_hex4_avalon_slave_write;
 
 	mm_interconnect_0_hex5_avalon_slave_write_ports_inv <= not mm_interconnect_0_hex5_avalon_slave_write;
+
+	mm_interconnect_0_multi_pwm_0_avalon_slave_0_write_ports_inv <= not mm_interconnect_0_multi_pwm_0_avalon_slave_0_write;
 
 	mm_interconnect_0_red_leds_s1_write_ports_inv <= not mm_interconnect_0_red_leds_s1_write;
 

@@ -17,32 +17,6 @@
          type = "int";
       }
    }
-   element adc.adc_control
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "8704";
-         type = "String";
-      }
-   }
-   element adc.adc_data
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "512";
-         type = "String";
-      }
-   }
    element adc.adc_slave
    {
       datum _lockedAddress
@@ -53,14 +27,6 @@
       datum baseAddress
       {
          value = "4608";
-         type = "String";
-      }
-   }
-   element adc.data_ready
-   {
-      datum _tags
-      {
-         value = "";
          type = "String";
       }
    }
@@ -206,6 +172,27 @@
          type = "int";
       }
    }
+   element multi_pwm_0
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
+      }
+   }
+   element multi_pwm_0.avalon_slave_0
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "512";
+         type = "String";
+      }
+   }
    element red_leds
    {
       datum _sortIndex
@@ -224,6 +211,14 @@
       datum baseAddress
       {
          value = "0";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
          type = "String";
       }
    }
@@ -320,6 +315,11 @@
  <interface name="hex5" internal="hex5.conduit" type="conduit" dir="end" />
  <interface name="hps_io" internal="hps.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="hps.memory" type="conduit" dir="end" />
+ <interface
+   name="multi_pwm"
+   internal="multi_pwm_0.conduit_end"
+   type="conduit"
+   dir="end" />
  <interface
    name="red_leds_external_connection"
    internal="red_leds.external_connection"
@@ -463,7 +463,7 @@
   <parameter name="F2SCLK_WARMRST_Enable" value="false" />
   <parameter name="F2SDRAM_Type" value="" />
   <parameter name="F2SDRAM_Width" value="" />
-  <parameter name="F2SINTERRUPT_Enable" value="true" />
+  <parameter name="F2SINTERRUPT_Enable" value="false" />
   <parameter name="F2S_Width" value="0" />
   <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
@@ -881,6 +881,9 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="false" />
  </module>
+ <module name="multi_pwm_0" kind="multi_pwm" version="1.0" enabled="1">
+  <parameter name="W" value="31" />
+ </module>
  <module name="red_leds" kind="altera_avalon_pio" version="17.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -983,6 +986,15 @@
    kind="avalon"
    version="17.0"
    start="hps.h2f_lw_axi_master"
+   end="multi_pwm_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0200" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps.h2f_lw_axi_master"
    end="sysid_qsys_0.control_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x1000" />
@@ -1016,6 +1028,7 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex3.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex4.clock" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="hex5.clock" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="multi_pwm_0.clock" />
  <connection
    kind="clock"
    version="17.0"
@@ -1046,6 +1059,11 @@
  <connection
    kind="reset"
    version="17.0"
+   start="clk_0.clk_reset"
+   end="multi_pwm_0.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
    start="hps.h2f_reset"
    end="red_leds.reset" />
  <connection
@@ -1065,6 +1083,11 @@
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex4.reset" />
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="hex5.reset" />
  <connection kind="reset" version="17.0" start="hps.h2f_reset" end="adc.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="hps.h2f_reset"
+   end="multi_pwm_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

@@ -48,8 +48,6 @@ module soc_system_hps #(
 		input  wire        h2f_lw_RLAST,             //                  .rlast
 		input  wire        h2f_lw_RVALID,            //                  .rvalid
 		output wire        h2f_lw_RREADY,            //                  .rready
-		input  wire [31:0] f2h_irq_p0,               //          f2h_irq0.irq
-		input  wire [31:0] f2h_irq_p1,               //          f2h_irq1.irq
 		output wire [14:0] mem_a,                    //            memory.mem_a
 		output wire [2:0]  mem_ba,                   //                  .mem_ba
 		output wire        mem_ck,                   //                  .mem_ck
@@ -181,9 +179,7 @@ module soc_system_hps #(
 		.h2f_lw_RRESP   (h2f_lw_RRESP),   //                  .rresp
 		.h2f_lw_RLAST   (h2f_lw_RLAST),   //                  .rlast
 		.h2f_lw_RVALID  (h2f_lw_RVALID),  //                  .rvalid
-		.h2f_lw_RREADY  (h2f_lw_RREADY),  //                  .rready
-		.f2h_irq_p0     (f2h_irq_p0),     //          f2h_irq0.irq
-		.f2h_irq_p1     (f2h_irq_p1)      //          f2h_irq1.irq
+		.h2f_lw_RREADY  (h2f_lw_RREADY)   //                  .rready
 	);
 
 	soc_system_hps_hps_io hps_io (

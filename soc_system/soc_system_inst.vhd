@@ -1,5 +1,9 @@
 	component soc_system is
 		port (
+			adc_external_interface_sclk         : out   std_logic;                                        -- sclk
+			adc_external_interface_cs_n         : out   std_logic;                                        -- cs_n
+			adc_external_interface_dout         : in    std_logic                     := 'X';             -- dout
+			adc_external_interface_din          : out   std_logic;                                        -- din
 			clk_clk                             : in    std_logic                     := 'X';             -- clk
 			hex0_export                         : out   std_logic_vector(6 downto 0);                     -- export
 			hex1_export                         : out   std_logic_vector(6 downto 0);                     -- export
@@ -72,18 +76,22 @@
 			memory_mem_odt                      : out   std_logic;                                        -- mem_odt
 			memory_mem_dm                       : out   std_logic_vector(3 downto 0);                     -- mem_dm
 			memory_oct_rzqin                    : in    std_logic                     := 'X';             -- oct_rzqin
+			multi_pwm_export_pwm1               : out   std_logic;                                        -- export_pwm1
+			multi_pwm_export_pwm2               : out   std_logic;                                        -- export_pwm2
+			multi_pwm_export_pwm3               : out   std_logic;                                        -- export_pwm3
+			multi_pwm_export_pwm4               : out   std_logic;                                        -- export_pwm4
 			red_leds_external_connection_export : out   std_logic_vector(9 downto 0);                     -- export
 			reset_reset_n                       : in    std_logic                     := 'X';             -- reset_n
-			switches_external_connection_export : in    std_logic_vector(9 downto 0)  := (others => 'X'); -- export
-			adc_external_interface_sclk         : out   std_logic;                                        -- sclk
-			adc_external_interface_cs_n         : out   std_logic;                                        -- cs_n
-			adc_external_interface_dout         : in    std_logic                     := 'X';             -- dout
-			adc_external_interface_din          : out   std_logic                                         -- din
+			switches_external_connection_export : in    std_logic_vector(9 downto 0)  := (others => 'X')  -- export
 		);
 	end component soc_system;
 
 	u0 : component soc_system
 		port map (
+			adc_external_interface_sclk         => CONNECTED_TO_adc_external_interface_sclk,         --       adc_external_interface.sclk
+			adc_external_interface_cs_n         => CONNECTED_TO_adc_external_interface_cs_n,         --                             .cs_n
+			adc_external_interface_dout         => CONNECTED_TO_adc_external_interface_dout,         --                             .dout
+			adc_external_interface_din          => CONNECTED_TO_adc_external_interface_din,          --                             .din
 			clk_clk                             => CONNECTED_TO_clk_clk,                             --                          clk.clk
 			hex0_export                         => CONNECTED_TO_hex0_export,                         --                         hex0.export
 			hex1_export                         => CONNECTED_TO_hex1_export,                         --                         hex1.export
@@ -156,12 +164,12 @@
 			memory_mem_odt                      => CONNECTED_TO_memory_mem_odt,                      --                             .mem_odt
 			memory_mem_dm                       => CONNECTED_TO_memory_mem_dm,                       --                             .mem_dm
 			memory_oct_rzqin                    => CONNECTED_TO_memory_oct_rzqin,                    --                             .oct_rzqin
+			multi_pwm_export_pwm1               => CONNECTED_TO_multi_pwm_export_pwm1,               --                    multi_pwm.export_pwm1
+			multi_pwm_export_pwm2               => CONNECTED_TO_multi_pwm_export_pwm2,               --                             .export_pwm2
+			multi_pwm_export_pwm3               => CONNECTED_TO_multi_pwm_export_pwm3,               --                             .export_pwm3
+			multi_pwm_export_pwm4               => CONNECTED_TO_multi_pwm_export_pwm4,               --                             .export_pwm4
 			red_leds_external_connection_export => CONNECTED_TO_red_leds_external_connection_export, -- red_leds_external_connection.export
 			reset_reset_n                       => CONNECTED_TO_reset_reset_n,                       --                        reset.reset_n
-			switches_external_connection_export => CONNECTED_TO_switches_external_connection_export, -- switches_external_connection.export
-			adc_external_interface_sclk         => CONNECTED_TO_adc_external_interface_sclk,         --       adc_external_interface.sclk
-			adc_external_interface_cs_n         => CONNECTED_TO_adc_external_interface_cs_n,         --                             .cs_n
-			adc_external_interface_dout         => CONNECTED_TO_adc_external_interface_dout,         --                             .dout
-			adc_external_interface_din          => CONNECTED_TO_adc_external_interface_din           --                             .din
+			switches_external_connection_export => CONNECTED_TO_switches_external_connection_export  -- switches_external_connection.export
 		);
 
